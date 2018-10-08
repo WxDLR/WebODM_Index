@@ -3,7 +3,7 @@ import json
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
-from django.http import Http404
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from guardian.shortcuts import get_objects_for_user
 
@@ -12,16 +12,50 @@ from app.models import Project, Task
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
+from app.models.user import UserForms
 from django import forms
+# import consumer user
+from app.models.user import User as NewUser
+
 
 def index(request):
     # Check first access where the user is expected to
     # create an admin account
-    if User.objects.filter(is_superuser=True).count() == 0:
-        return redirect('welcome')
+    # if User.objects.filter(is_superuser=True).count() == 0:
+    #     return redirect('welcome')
+    user_id = request.COOKIES.get('Okaygis_id', None)
+    if NewUser.objects.filter(id=user_id).count() == 0:
+        return redirect('login')
+    return render(request, 'index.html')
 
-    return redirect('dashboard' if request.user.is_authenticated
-                    else 'login')
+
+
+def login(request):
+    user_id = request.COOKIES.get('Okaygis_id', None)
+    if NewUser.objects.filter(id=user_id):
+        return redirect('index')
+    if request.method == "POST":
+        username = request.POST.get("username", None)
+        password = request.POST.get("password", None)
+        if username and password:
+            user = NewUser.objects.filter(name=username).first()
+            if user and user.password == password:
+                rep = HttpResponseRedirect(redirect_to='^')
+                rep.set_cookie('Okaygis_id', user.id, max_age=60*30)
+                return rep
+    return render(request, 'login/login.html')
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserForms(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(content="Thanks")
+    else:
+        form = UserForms()
+    return render(request, 'login/register.html', {"form": form})
+
 
 @login_required
 def dashboard(request):
@@ -102,6 +136,7 @@ def processing_node(request, processing_node_id):
                 'available_options_json': pn.get_available_options_json(pretty=True)
             })
 
+
 class FirstUserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -138,6 +173,7 @@ def welcome(request):
 
 def handler404(request):
     return render(request, '404.html', status=404)
+
 
 def handler500(request):
     return render(request, '500.html', status=500)

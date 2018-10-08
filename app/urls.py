@@ -11,6 +11,8 @@ from webodm import settings
 
 urlpatterns = [
     url(r'^$', app_views.index, name='index'),
+    url(r'^login', app_views.login, name='login'),
+    url(r'^register/', app_views.register, name='register'),
     url(r'^welcome/$', app_views.welcome, name='welcome'),
     url(r'^dashboard/$', app_views.dashboard, name='dashboard'),
     url(r'^map/project/(?P<project_pk>[^/.]+)/task/(?P<task_pk>[^/.]+)/$', app_views.map, name='map'),

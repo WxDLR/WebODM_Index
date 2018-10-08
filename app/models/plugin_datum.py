@@ -1,8 +1,8 @@
 import logging
 from django.db import models
 from django.contrib.postgres import fields
-# from django.contrib.auth.models import User
-from app.models.user import User
+from django.contrib.auth.models import User
+# from app.models.user import User
 logger = logging.getLogger('app.logger')
 
 class PluginDatum(models.Model):

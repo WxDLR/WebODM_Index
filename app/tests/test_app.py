@@ -35,7 +35,7 @@ class TestApp(BootTestCase):
         self.assertRedirects(res, '/login/')
 
         # The login page is being rendered by the correct template
-        self.assertTemplateUsed(res, 'registration/login.html')
+        self.assertTemplateUsed(res, 'registration/register.html')
 
         # asks the user to login using a set of valid credentials
         res = c.post('/login/', data=self.credentials, follow=True)
