@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'django_filters',
+    'app',
     'guardian',
     'rest_framework',
     'rest_framework_nested',
@@ -76,7 +77,6 @@ INSTALLED_APPS = [
     'imagekit',
     'codemirror2',
     'compressor',
-    'app',
     'nodeodm',
 ]
 
@@ -109,6 +109,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.contexts.settings.load',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -150,16 +151,18 @@ AUTH_PASSWORD_VALIDATORS = [
    },
 ]
 
+# Personal User Fields
+AUTH_USER_MODEL = 'app.myuser'
+
 # Hook guardian
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', # this is default
-    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
 )
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 TIME_ZONE = tzlocal.get_localzone().zone
 USE_I18N = True
 USE_L10N = True
@@ -250,6 +253,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 # File uploads
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'app', 'media')
 if TESTING:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'app', 'media_test')

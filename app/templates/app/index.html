@@ -13,190 +13,37 @@
 		<!--[if lt IE 9]>
 
     	<![endif]-->
+        <style>
+            .nav li{
+                text-align: center;
+                float: left;
+                list-style: none;
+                font-size: 28px;
+                margin: 10px 30px;
+            }
+            .nav li a{
+                text-decoration: none;
+            }
+        </style>
 	</head>
 <body>
 <div class="header">
 	<div class="wrap">
-		<a href="/" class="logo">
-			<img src="/static/web/images/logo.png" alt="如初建模平台">
-			<h1>建模平台</h1>
-			<span class="logo-sub">reparo.cn</span>
-		</a>
 		<ul class="nav">
-			<li><a href="/">首页</a></li>
-			<li><a href="/model/model.html">模型</a></li>
+			<li><a href={% url 'index' %}>首页</a></li>
+			<li><a href="/models">模型</a></li>
 			<li><a href="/bbs/index.html?action=cat&type=3" target="_blank">教程</a></li>
 			<li><a href="/bbs/index.html" target="_blank">社区</a></li>
 		</ul>
 		<div class="header-r">
 			<div class="mulogin">
-							<a href="/login/index.html">登录</a> | <a href="/login/reg.html">注册</a>
-				
+							<a href={% url 'user_login' %}>登录</a> | <a href={% url 'user_register' %}>注册</a>| <a href={% url 'user_logout' %}>登出</a>
 			</div>
 		</div>
 	</div>
 </div>
 
 
-<div class="banner" style="background-image: url(/static/web/images/index-banner.jpg);">
-	<div class="banner-title">基于互联网的文化类三维重建平台</div>
-	<div class="banner-sub-title">一起寻觅历史，用云端三维建模技术，重现如初</div>
-	<a href="/web/project/modeldetail_1.html" class="banner-btn btn btn-o">开始免费建模</a>
-</div>
-<div class="wrap block1">
-	<div class="blobk1-title">拍照上传就可以建模，极其简单、快速的建模流程</div>
-	<div class="icon-block clr">
-		<div class="icon-block-item">
-			<img src="/static/web/images/icon1.png">
-			<div class="icon-blobk-title">简单易用</div>
-			<div class="icon-blobk-text">按教程拍照上传，仅需要照片<br>就是这么简单</div>
-		</div>
-		<div class="icon-block-item">
-			<img src="/static/web/images/icon2.png">
-			<div class="icon-blobk-title">低成本建模</div>
-			<div class="icon-blobk-text">无需购买昂贵的电脑设备，<br>无需专业的建模技术</div>
-		</div>
-		<div class="icon-block-item">
-			<img src="/static/web/images/icon3.png">
-			<div class="icon-blobk-title">极速云解算</div>
-			<div class="icon-blobk-text">基于云解算技术，相比传统建模<br>方式效率提高数十倍！</div>
-		</div>
-		<div class="icon-block-item">
-			<img src="/static/web/images/icon4.png">
-			<div class="icon-blobk-title">在线展示</div>
-			<div class="icon-blobk-text">独有的分层加载技术，即使在手机<br>上也能流畅展示大场景模型</div>
-		</div>
-		
-	</div>
-</div>
-<div class="index-video"  style="background-image: url(/static/web/images/index-video.jpg);">
-	<div class="video-title">三步得到模型</div>
-	<ul class="step">
-		<li>1</li>
-		<li>2</li>
-		<li>3</li>
-	</ul>
-	<a href="/web/project/modeldetail_1.html" class="video-btn btn btn-o">立即使用</a>
-</div>
-<div class="index-selection-wrap">
-	<div class="wrap index-selection-header">
-		<h2>编辑精选模型</h2>
-		<div class="index-selection-text">
-			<a href="/model/model.html" class="index-selection-more">查看更多 ></a>
-			用户通过如初建模平台，将不计其数的文化遗产<br>通过数字三维技术保存下来。
-		</div>
-	</div>
-	<div class="index-selection">
-		<div class="js-mouseslide">
-			
-	<ul class="clr">
-				<li>
-			<a href="/model/modeldetail.html?id=1644" target="_blank" title="浏览石湾three在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5bb04acbf2ad601e4fe4a845.jpg?v=1" alt="石湾three">
-				<h3>石湾three</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=1554" target="_blank" title="浏览西汉青铜雁鱼灯在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5b9cc543296e2e381c7b2ecbuhoC.jpg?v=1" alt="西汉青铜雁鱼灯">
-				<h3>西汉青铜雁鱼灯</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=255" target="_blank" title="浏览广东河源市·林寨村四角楼核心区在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5a30851103482e04413e03f6.jpg?v=1" alt="广东河源市·林寨村四角楼核心区">
-				<h3>广东河源市·林寨村四角楼核心区</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=588" target="_blank" title="浏览广东韶关市 ·  双峰寨在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5a6fe5c74a7fbc3f874f4a53.jpg?v=1" alt="广东韶关市 ·  双峰寨">
-				<h3>广东韶关市 ·  双峰寨</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=331" target="_blank" title="浏览广东潮州市 · 道韵楼在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5a44a256d03501404fc3840b.jpg?v=1" alt="广东潮州市 · 道韵楼">
-				<h3>广东潮州市 · 道韵楼</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=254" target="_blank" title="浏览广东河源市·和平县林寨镇林寨村在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5a2f3f9953ee77140ddb9dc2.jpg?v=1" alt="广东河源市·和平县林寨镇林寨村">
-				<h3>广东河源市·和平县林寨镇林寨村</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=1294" target="_blank" title="浏览秋溪旧家在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5b5efc75764f146feee86855pto2.jpg?v=1" alt="秋溪旧家">
-				<h3>秋溪旧家</h3>
-			</a>
-		</li>
-				<li>
-			<a href="/model/modeldetail.html?id=534" target="_blank" title="浏览广东梅州市 · 丘逢甲故居在线三维模型">
-				<img src="http://p79939xfv.bkt.clouddn.com/cover/5a604e43784780334bb82ca2.jpg?v=1" alt="广东梅州市 · 丘逢甲故居">
-				<h3>广东梅州市 · 丘逢甲故居</h3>
-			</a>
-		</li>
-			</ul>
-		</div>
-	</div>
-</div>
-
-<div class="footer clr">
-	<div class="wrap">
-		<div class="footer-col clr">
-			<ul class="footer-item">
-				<div class="footer-sub-title">关于</div>
-				<li><a href="/pages/article.html?id=84" title="" target="_blank">关于如初</a></li>
-				<li><a href="/pages/article.html?id=48" title="" target="_blank">加入我们</a></li>
-				<li><a href="/pages/article.html?id=85" title="" target="_blank">用户协议</a></li>
-				<li><a href="/bbs/index.html" title="" target="_blank">帮助</a></li>
-			</ul>
-			<ul class="footer-item">
-				<div class="footer-sub-title">产品和服务</div>
-				<!--<li><a href="/bbs/index.html?action=cat&type=3" title="" target="_blank">照片建模</a></li>-->
-				<li><a href="/bbs/index.html?action=cat&type=3" title="" target="_blank">拍照教程</a></li>
-				<li><a href="/pages/planner.html" title="" target="_blank">费用计算</a></li>
-				<li><a href="/bbs/index.html" title="" target="_blank">社区</a></li>
-			</ul>
-			<ul class="footer-item">
-				<div class="footer-sub-title">其它</div>
-				<li><a href="/pages/article.html?id=49" title="" target="_blank">广告合作</a></li>
-				<li><a href="/pages/article.html?id=50" title="" target="_blank">商务合作</a></li>
-				<!--<li><a href="/pages/article.html?id=51" title="" target="_blank">代理加盟</a></li>-->
-			</ul>
-		</div>
-		<div class="footer-col">
-			<div class="footer-hezuo">
-				<div class="footer-sub-title">合作伙伴</div>
-				<img src="/static/web/images/guangdongshengbo.jpg">
-				<img src="/static/web/images/hunankaogu.jpg">
-				<img src="/static/web/images/okay.jpg">
-				<img src="/static/web/images/nanhaiyihao.jpg">
-			</div>
-		</div>
-		<div class="footer-col">
-			<div class="footer-contact">
-				<div class="footer-sub-title">客服咨询电话（9:30-19:00）</div>
-				<div class="footer-call">020-89895051</div>
-				<div class="f12 light">公司地址：广州市黄埔区科学大道182号创新大厦C2 A102</div>
-				<div class="footer-qrcode">
-					<img src="/static/web/images/weixin.jpg">
-					如初微信公众号
-				</div>
-				<div class="footer-qrcode">
-					<img src="/static/web/images/xcx.jpg">
-					如初小程序
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="copyright f12">
-	友情链接 <a href="http://www.gdmuseum.com/" target="_blank">广东省博物馆</a> | <a href="http://www.okaygis.com/" target="_blank">广州欧科</a> | <a href="http://www.jnwenbo.gov.cn/" target="_blank">山东省文物局</a> | <a href="http://www.guangzhoumuseum.cn/" target="_blank">广州市博物馆</a> | <a href="http://www.dpm.org.cn/" target="_blank">故宫博物院</a> | <a href="http://www.gzchenjiaci.com/" target="_blank">广东民间工艺博物馆</a> | <a href="http://www.cdmuseum.com/" target="_blank">成都市博物馆</a> | <a href="http://www.csm.hn.cn/" target="_blank">长沙市博物馆</a> | <a href="http://www.hnkgs.com/" target="_blank">湖南省文物考古研究所</a> | <a href="http://www.cqkaogu.com/" target="_blank">重庆市文化遗产保护研究院</a> | <a href="http://www.cmnh.org.cn/" target="_blank">重庆自然博物馆</a> <br>
-	© 2017-2018 www.reparo.cn 粤ICP备17140267号-1 <!-- | 网站地图 -->
-</div>
 <script type="text/javascript" src="/static/web/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/static/web/js/layer.js"></script>
 <script type="text/javascript">

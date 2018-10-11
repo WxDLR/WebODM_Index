@@ -3,8 +3,10 @@ import json
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from app.models.user import MyUser
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from guardian.shortcuts import get_objects_for_user
 
 from nodeodm.models import ProcessingNode
@@ -12,10 +14,11 @@ from app.models import Project, Task
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
-from app.models.user import UserForms
+
 from django import forms
 # import consumer user
-from app.models.user import User as NewUser
+from app.models.user import MyUser as NewUser
+from app.api.projects import ProjectSerializer
 
 
 def index(request):
@@ -25,46 +28,19 @@ def index(request):
     #     return redirect('welcome')
     user_id = request.COOKIES.get('Okaygis_id', None)
     if NewUser.objects.filter(id=user_id).count() == 0:
-        return redirect('login')
+        return redirect('user_login')
     return render(request, 'index.html')
 
 
-
-def login(request):
-    user_id = request.COOKIES.get('Okaygis_id', None)
-    if NewUser.objects.filter(id=user_id):
-        return redirect('index')
-    if request.method == "POST":
-        username = request.POST.get("username", None)
-        password = request.POST.get("password", None)
-        if username and password:
-            user = NewUser.objects.filter(name=username).first()
-            if user and user.password == password:
-                rep = HttpResponseRedirect(redirect_to='^')
-                rep.set_cookie('Okaygis_id', user.id, max_age=60*30)
-                return rep
-    return render(request, 'login/login.html')
-
-
-def register(request):
-    if request.method == "POST":
-        form = UserForms(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse(content="Thanks")
-    else:
-        form = UserForms()
-    return render(request, 'login/register.html', {"form": form})
-
-
-@login_required
+# @login_required
 def dashboard(request):
+    myuser = MyUser.objects.filter(id=request.COOKIES.get('Okaygis_id')).first()
     no_processingnodes = ProcessingNode.objects.count() == 0
-    no_tasks = Task.objects.filter(project__owner=request.user).count() == 0
+    no_tasks = Task.objects.filter(project__owner=myuser).count() == 0
 
     # Create first project automatically
     if Project.objects.count() == 0:
-        Project.objects.create(owner=request.user, name=_("First Project"))
+        Project.objects.create(owner=myuser, name=_("First Project"))
 
     return render(request, 'app/dashboard.html', {'title': 'Dashboard',
         'no_processingnodes': no_processingnodes,
@@ -72,7 +48,7 @@ def dashboard(request):
     })
 
 
-@login_required
+# @login_required
 def map(request, project_pk=None, task_pk=None):
     title = _("Map")
 
@@ -99,7 +75,7 @@ def map(request, project_pk=None, task_pk=None):
         })
 
 
-@login_required
+# @login_required
 def model_display(request, project_pk=None, task_pk=None):
     title = _("3D Model Display")
 
@@ -123,7 +99,7 @@ def model_display(request, project_pk=None, task_pk=None):
         })
 
 
-@login_required
+# @login_required
 def processing_node(request, processing_node_id):
     pn = get_object_or_404(ProcessingNode, pk=processing_node_id)
     if not pn.update_node_info():
@@ -139,15 +115,16 @@ def processing_node(request, processing_node_id):
 
 class FirstUserForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ('username', 'password', )
+        model = MyUser
+        fields = ('name', 'password', 'email')
         widgets = {
             'password': forms.PasswordInput(),
+            'email': forms.EmailInput,
         }
 
 
 def welcome(request):
-    if User.objects.filter(is_superuser=True).count() > 0:
+    if MyUser.objects.filter(is_superuser=True).count() > 0:
         return redirect('index')
 
     fuf = FirstUserForm()
@@ -161,7 +138,7 @@ def welcome(request):
             admin_user.save()
 
             # Log-in automatically
-            login(request, admin_user, 'django.contrib.auth.backends.ModelBackend')
+            # login(request, admin_user, 'django.contrib.auth.backends.ModelBackend')
             return redirect('dashboard')
 
     return render(request, 'app/welcome.html',
@@ -177,3 +154,11 @@ def handler404(request):
 
 def handler500(request):
     return render(request, '500.html', status=500)
+
+# MyViews
+def models(request):
+    projects = Project.objects.all()
+    serializer = ProjectSerializer(projects, many=True)
+    print(serializer.data[0]['tasks'][0])
+    print(type(serializer.data[0]['tasks']))
+    return render(request, 'models.html', context={'projectlist': serializer.data})

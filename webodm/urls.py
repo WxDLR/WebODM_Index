@@ -25,6 +25,7 @@ admin.site.site_header = 'WebODM Administration'
 urlpatterns = [
     url(r'^', include('app.urls')),
     url(r'^', include('django.contrib.auth.urls')),
+    url(r'^user/', include('app.user_login_urls')),
     url(r'^admin/', admin.site.urls),
 ]
 
@@ -37,7 +38,6 @@ if settings.DEBUG:
         url(r'^media/settings/(?P<path>.*)$', serve, {
             'document_root': os.path.join(settings.MEDIA_ROOT, 'settings')
         }),
-
     ]
 
 

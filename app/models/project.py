@@ -1,7 +1,7 @@
 import logging
 
 # from django.contrib.auth.models import User
-from app.models.user import User
+from app.models.user import MyUser
 from django.db import models
 from django.db.models import Q
 from django.db.models import signals
@@ -19,7 +19,7 @@ logger = logging.getLogger('app.logger')
 
 
 class Project(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.PROTECT, help_text="The person who created the project")
+    owner = models.ForeignKey(MyUser, on_delete=models.PROTECT, help_text="The person who created the project")
     name = models.CharField(max_length=255, help_text="A label used to describe the project")
     description = models.TextField(default="", blank=True, help_text="More in-depth description of the project")
     created_at = models.DateTimeField(default=timezone.now, help_text="Creation date")

@@ -109,6 +109,8 @@ def resize_image(image_path, resize_to):
 
     return {'path': image_path, 'resize_ratio': ratio}
 
+
+
 class Task(models.Model):
     ASSETS_MAP = {
             'all.zip': 'all.zip',

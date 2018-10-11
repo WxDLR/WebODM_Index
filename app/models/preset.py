@@ -1,7 +1,7 @@
 import logging
 
 # from django.contrib.auth.models import User
-from app.models.user import User
+from app.models.user import MyUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
@@ -11,7 +11,7 @@ logger = logging.getLogger('app.logger')
 
 
 class Preset(models.Model):
-    owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, help_text="The person who owns this preset")
+    owner = models.ForeignKey(MyUser, blank=True, null=True, on_delete=models.CASCADE, help_text="The person who owns this preset")
     name = models.CharField(max_length=255, blank=False, null=False, help_text="A label used to describe the preset")
     options = JSONField(default=list(), blank=True, help_text="Options that define this preset (same format as in a Task's options).",
                                validators=[validate_task_options])

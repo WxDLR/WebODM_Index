@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
-<form action={% url "login" %}, method="post">
+<form method="post">
     {% csrf_token %}
-    <input type="text" name="username">
-    <input type="password" name="password" >
+    {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>
 </body>

@@ -16,7 +16,7 @@ class ApiClient:
         self.token = token
         self.timeout = timeout
 
-    def url(self, url, query = {}):
+    def url(self, url, query={}):
         netloc = self.host if self.port == 80 else "{}:{}".format(self.host, self.port)
 
         if len(self.token) > 0:
