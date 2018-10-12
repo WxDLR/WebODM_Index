@@ -36,7 +36,6 @@ urlpatterns = [
 # TODO: is there a way to place plugins /public directories
 # into the static build directories and let nginx serve them?
 urlpatterns = urlpatterns + get_app_url_patterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 handler404 = app_views.handler404
 handler500 = app_views.handler500
 

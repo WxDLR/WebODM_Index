@@ -38,7 +38,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid4)
-    name = models.CharField(max_length=40, null=False, unique=True)
+    username = models.CharField(max_length=40, null=False, unique=True)
     phone_number = models.CharField(max_length=11, )
     email = models.EmailField()
     icon = models.ImageField()
@@ -52,23 +52,23 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         default=True,
     )
 
-    USERNAME_FIELD = 'name'
-    REQUIRED_FIELDS = ['phone_number', 'email', icon]
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['phone_number', 'email', 'icon']
 
     objects = MyUserManager()
 
     def get_full_name(self):
-        return self.name
+        return self.username
 
     def get_short_name(self):
-        return self.name
+        return self.username
 
     class Meta:
         db_table = "myuser"
 
 
 class UserRegisterForm(forms.ModelForm):
-    name = forms.CharField(label="name", required=True, max_length=16, min_length=6, help_text="Enter your name",
+    username = forms.CharField(label="name", required=True, max_length=16, min_length=6, help_text="Enter your name",
                            widget=forms.TextInput(attrs={"style": "text_alien:center"}))
     password = forms.CharField(label="password", required=True, min_length=6, widget=forms.PasswordInput())
     phone_number = forms.CharField(label="phone_number", required=False, max_length=11, min_length=11,
@@ -78,14 +78,15 @@ class UserRegisterForm(forms.ModelForm):
 
     class Meta:
         model = MyUser
-        fields = ("name", "password", "phone_number", "email")
+        fields = ("username", "password", "phone_number", "email")
 
 
 class UserLoginForm(forms.Form):
-    name = forms.CharField(label="name", required=True, max_length=16, min_length=6, help_text="Enter your name",
+    username = forms.CharField(label="name", required=True, max_length=16, min_length=6, help_text="Enter your name",
                            widget=forms.TextInput(attrs={"style": "text_alien:center"}))
     password = forms.CharField(label="password", required=True, min_length=6, widget=forms.PasswordInput())
 
     # class Meta:
     #     model = MyUser
     #     fields = ("name", "password")
+

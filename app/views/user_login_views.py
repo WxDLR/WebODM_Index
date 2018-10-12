@@ -1,13 +1,9 @@
 from django.shortcuts import HttpResponse, HttpResponseRedirect, redirect, reverse
 from django.shortcuts import render
-from django.contrib.auth.hashers import make_password, check_password
-
+from django.contrib.auth import login, authenticate, logout
 from app.models.user import MyUser
 from app.models.user import UserLoginForm
 from app.models.user import UserRegisterForm
-
-
-from app.utils import pass_hash
 
 
 def login_required_mine(func):
@@ -19,25 +15,22 @@ def login_required_mine(func):
     return wraper
 
 
-def logout(request):
+def user_logout(request):
+    logout(request)
     resp = HttpResponseRedirect(reverse('index'))
-    resp.delete_cookie("Okaygis_id")
     return resp
 
 
-def login(request):
-    user_id = request.COOKIES.get('Okaygis_id', None)
-    if MyUser.objects.filter(id=user_id):
-        return redirect('index')
+def user_login(request):
     if request.method == "POST":
         form = UserLoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['name']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = MyUser.objects.filter(name=username).first()
-            if user and check_password(password, user.password):
-                rep = HttpResponseRedirect(reverse("index"))
-                rep.set_cookie('Okaygis_id', user.id, max_age=60*60*24)
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                rep = redirect(reverse('index'))
                 return rep
     else:
         form = UserLoginForm()
@@ -48,22 +41,15 @@ def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            content = save_user(form.cleaned_data)
+            data = form.cleaned_data
+            try:
+                MyUser.objects.create_user(username=data["username"], password=data["password"], email=data['email'],
+                                           phone_number=data['phone_number'])
+            except ValueError:
+                return "something wrong happened, please try again"
             return HttpResponse(content=content)
     else:
         form = UserRegisterForm()
     return render(request, 'app/register.html', {"form": form})
 
-
-def save_user(data):
-    try:
-        user = MyUser()
-        user.name = data['name']
-        user.password = make_password(data["password"])
-        user.email = data["email"]
-        user.phone_number = data['phone_number']
-        user.save()
-    except ValueError:
-        return "something wrong happened, pleasse try again"
-    return "Thanks"
 

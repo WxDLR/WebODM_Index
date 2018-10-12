@@ -3,6 +3,8 @@ import json
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.core import serializers
+
 from app.models.user import MyUser
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -16,20 +18,15 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from django import forms
-# import consumer user
-from app.models.user import MyUser as NewUser
 from app.api.projects import ProjectSerializer
 
 
+# @login_required(login_url=r'/user/login/')
 def index(request):
-    # Check first access where the user is expected to
-    # create an admin account
-    # if User.objects.filter(is_superuser=True).count() == 0:
-    #     return redirect('welcome')
-    user_id = request.COOKIES.get('Okaygis_id', None)
-    if NewUser.objects.filter(id=user_id).count() == 0:
-        return redirect('user_login')
-    return render(request, 'index.html')
+    queryset = Project.objects.all()
+    serialize = ProjectSerializer(queryset, many=True)
+    print(serialize.data)
+    return render(request, 'index.html', context={"projects": serialize.data})
 
 
 # @login_required
@@ -116,7 +113,7 @@ def processing_node(request, processing_node_id):
 class FirstUserForm(forms.ModelForm):
     class Meta:
         model = MyUser
-        fields = ('name', 'password', 'email')
+        fields = ('username', 'password', 'email')
         widgets = {
             'password': forms.PasswordInput(),
             'email': forms.EmailInput,

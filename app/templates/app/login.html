@@ -5,11 +5,30 @@
     <title>Login</title>
 </head>
 <body>
-<form method="post">
+<form action={% url 'user_login' %} method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit"">
     <a href={% url 'user_register' %}>Register</a>
 </form>
+{#<script type="text/javascript">#}
+{#    function login() {#}
+{#        $.ajax({#}
+{#            type: "POST",#}
+{#            dataType: "json",#}
+{#            url: "/user/login",#}
+{#            data: {#}
+{##}
+{#            },#}
+{#            success: function (result) {#}
+{#                alert(result);#}
+{#            }#}
+{#            errot: function () {#}
+{#                alert("Wrong!!");#}
+{##}
+{#            }#}
+{#        })#}
+{#    }#}
+{#</script>#}
 </body>
 </html>
