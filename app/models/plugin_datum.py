@@ -16,3 +16,7 @@ class PluginDatum(models.Model):
 
     def __str__(self):
         return self.key
+
+    class Meta:
+        verbose_name = "插件"
+        verbose_name_plural = verbose_name

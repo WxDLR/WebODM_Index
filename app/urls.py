@@ -28,6 +28,8 @@ urlpatterns = [
 
     url(r'^processingnode/([\d]+)/$', app_views.processing_node, name='processing_node'),
 
+    url(r'img/', app_views.image_upload, name='img'),
+
     url(r'^api/', include("app.api.urls")),
 ]
 

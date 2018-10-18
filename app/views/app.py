@@ -23,7 +23,7 @@ from app.api.projects import ProjectSerializer
 
 # @login_required(login_url=r'/user/login/')
 def index(request):
-    queryset = Project.objects.all()
+    queryset = Project.objects.filter(task__status=40)
     serialize = ProjectSerializer(queryset, many=True)
     print(serialize.data)
     return render(request, 'index.html', context={"projects": serialize.data})
@@ -159,3 +159,17 @@ def models(request):
     print(serializer.data[0]['tasks'][0])
     print(type(serializer.data[0]['tasks']))
     return render(request, 'models.html', context={'projectlist': serializer.data})
+
+from app.models import ImageUpload
+
+def image_upload(request):
+    if request.method == "POST":
+        images = request.FILES.getlist('img')
+        for img in images:
+            task = Task.objects.filter(id="20cf5374-02ca-4aa4-ada8-6b8375c719fa").first()
+            image = ImageUpload(task=task, image=img)
+            image.save()
+            return HttpResponse(content="hello")
+    else:
+        return render(request, 'imageupload.html')
+

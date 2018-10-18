@@ -29,7 +29,9 @@ admin.site.register(Preset, admin.ModelAdmin)
 
 
 class MyUserManager(admin.ModelAdmin):
-    pass
+    # fields = ("username", "password", "email", "phone_number")
+    exclude = ("",)
+    list_display = ("username", "password", "email", "phone_number")
 
 
 admin.site.register(MyUser, MyUserManager)

@@ -663,3 +663,5 @@ class Task(models.Model):
         permissions = (
             ('view_task', 'Can view task'),
         )
+        verbose_name = "任务"
+        verbose_name_plural = verbose_name

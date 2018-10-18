@@ -19,11 +19,13 @@ logger = logging.getLogger('app.logger')
 
 
 class Project(models.Model):
-    owner = models.ForeignKey(MyUser, on_delete=models.PROTECT, help_text="The person who created the project")
+    owner = models.ForeignKey(MyUser, on_delete=models.PROTECT, help_text="The person who created the project",
+                              verbose_name="所有者")
     name = models.CharField(max_length=255, help_text="A label used to describe the project")
     description = models.TextField(default="", blank=True, help_text="More in-depth description of the project")
     created_at = models.DateTimeField(default=timezone.now, help_text="Creation date")
-    deleting = models.BooleanField(db_index=True, default=False, help_text="Whether this project has been marked for deletion. Projects that have running tasks need to wait for tasks to be properly cleaned up before they can be deleted.")
+    deleting = models.BooleanField(db_index=True, default=False,
+                                   help_text="是否删除")
 
     def delete(self, *args):
         # No tasks?
@@ -48,14 +50,16 @@ class Project(models.Model):
 
     def get_map_items(self):
         return [task.get_map_items() for task in self.task_set.filter(
-                    status=status_codes.COMPLETED
-                ).filter(Q(orthophoto_extent__isnull=False) | Q(dsm_extent__isnull=False) | Q(dtm_extent__isnull=False))
-                .only('id', 'project_id')]
+            status=status_codes.COMPLETED
+        ).filter(Q(orthophoto_extent__isnull=False) | Q(dsm_extent__isnull=False) | Q(dtm_extent__isnull=False))
+            .only('id', 'project_id')]
 
     class Meta:
         permissions = (
             ('view_project', 'Can view project'),
         )
+        verbose_name = "项目"
+        verbose_name_plural = verbose_name
 
 
 @receiver(signals.post_save, sender=Project, dispatch_uid="project_post_save")

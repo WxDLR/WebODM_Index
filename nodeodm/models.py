@@ -204,6 +204,8 @@ class ProcessingNode(models.Model):
         permissions = (
             ('view_processingnode', 'Can view processing node'),
         )
+        verbose_name = "解算节点"
+        verbose_name_plural = verbose_name
 
 
 # First time a processing node is created, automatically try to update
@@ -214,6 +216,7 @@ def auto_update_node_info(sender, instance, created, **kwargs):
             instance.update_node_info()
         except ProcessingError:
             pass
+
 
 class ProcessingNodeUserObjectPermission(UserObjectPermissionBase):
     content_object = models.ForeignKey(ProcessingNode, on_delete=models.CASCADE)

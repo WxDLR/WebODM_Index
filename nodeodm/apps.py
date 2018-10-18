@@ -4,4 +4,4 @@ from django.apps import AppConfig
 
 class NodeodmConfig(AppConfig):
     name = 'nodeodm'
-    verbose_name = 'Node Management'
+    verbose_name = '节点管理'

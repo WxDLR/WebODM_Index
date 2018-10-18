@@ -1,62 +1,45 @@
 {% extends 'index_base.html' %}
+{% load static %}
+
 {% block extra_css %}
-    <style>
-        .header{
-            display: block;
-            margin-bottom: 20px;
-        }
-        .nav{
-            text-align: center;
-            width: 80%;
-            height: 30px;
-            display: block;
-            float: left;
-        }
-        .nav li{
-            float: left;
-            width: 20%;
-        }
-        .header-r{
-            float: right;
-            height: 30px;
-            margin-right: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'app/css/project_info.css' %}">
 {% endblock %}
 {% block header %}
     <div class="header">
 	    <div class="wrap">
-            <ul class="nav">
+            <ul class="nav1">
                 <li><a href={% url 'index' %}>首页</a></li>
                 <li><a href="/models">模型</a></li>
                 <li><a href="/bbs/index.html?action=cat&type=3" target="_blank">教程</a></li>
                 <li><a href="/bbs/index.html" target="_blank">社区</a></li>
 		    </ul>
-		    {% if request.user.is_authenticated %}
-                <div class="header-r">
-                    <div class="user_info">
-                        <p>{{ username }}</p>
-                    </div>
-                    <div class="mulogin">
-                        <a href={% url 'user_logout' %}>登出</a>
-                    </div>
-		        </div>
-            {% else %}
-                <div class="header-r">
-                    <div class="mulogin">
-                        <a href={% url 'user_login' %}>登录</a> | <a href={% url 'user_register' %}>注册</a>| <a href={% url 'user_logout' %}>登出</a>
-                    </div>
-		        </div>
-            {% endif %}
+            <ul class="nav2">
+                {% if request.user.is_authenticated %}
+                    <li><a href="/user/mine" target="_blank">{{ request.user }}</a></li>
+                    <li><a href={% url 'user_logout' %}>登出</a></li>
+                {% else %}
+                    <li><a href={% url 'user_login' %}>登录</a></li>
+                    <li><a href={% url 'user_register' %}>注册</a></li>
+                {% endif %}
+            </ul>
 	    </div>
     </div>
 {% endblock %}
 {% block body %}
+    <div class="body_projects">
     {% for foo in projects %}
-        <div class="project_info">
-            <img src="{{ MEDIA_URL }}project/1/task/74d9d965-b00f-4ddf-a49d-d41e5f4bfd5d/assets/odm_orthophoto/odm_orthophoto.png" alt="">
-        </div>
+        {% for task in foo.tasks %}
+            <div class="body_info">
+                <img src="{{ MEDIA_URL }}project/{{ foo.id }}/task/{{ task }}/assets/odm_orthophoto/odm_orthophoto.png" alt="">
+                <a href="/api/projects/{{ foo.id }}/tasks/{{ task }}"><P>{{ foo.name }}</P></a>
+                <p>{{ foo.owner }}</p>
+{#                <p>{{ foo.description }}</p>#}
+                <p>{{ foo.created_at }}</p>
+            </div>
+        {% endfor %}
     {% endfor %}
+    </div>
+
 {% endblock %}
 
 

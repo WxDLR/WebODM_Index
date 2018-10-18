@@ -35,7 +35,7 @@ class ApiClient:
         return requests.get(self.url('/task/{}/info').format(uuid), timeout=self.timeout).json()
 
     @TestWatch.watch()
-    def task_output(self, uuid, line = 0):
+    def task_output(self, uuid, line=0):
         return requests.get(self.url('/task/{}/output', {'line': line}).format(uuid), timeout=self.timeout).json()
 
     def task_cancel(self, uuid):

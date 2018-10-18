@@ -5,39 +5,8 @@ from django import forms
 from uuid import uuid4
 
 
-class MyUserManager(BaseUserManager):
-    def _create_user(self, username, email, password, **extra_fields):
-        """
-        Create and save a user with the given username, email, and password.
-        """
-        if not username:
-            raise ValueError('The given username must be set')
-        email = self.normalize_email(email)
-        username = self.model.normalize_username(username)
-        user = self.model(username=username, email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, username, email, password, **extra_field):
-        extra_field.setdefault('is_staff', False)
-        extra_field.setdefault('is_superuser', False)
-        return self._create_user(username, email, password, **extra_field)
-
-    def create_superuser(self, username, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self._create_user(username, email, password, **extra_fields)
-
-
-class MyUser(AbstractBaseUser, PermissionsMixin):
-    id = models.UUIDField(primary_key=True, auto_created=True, default=uuid4)
+class MyUser(AbstractUser):
+    id = models.CharField(primary_key=True, max_length=128, default=uuid4, editable=False)
     username = models.CharField(max_length=40, null=False, unique=True)
     phone_number = models.CharField(max_length=11, )
     email = models.EmailField()
@@ -53,18 +22,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['phone_number', 'email', 'icon']
-
-    objects = MyUserManager()
-
-    def get_full_name(self):
-        return self.username
-
-    def get_short_name(self):
-        return self.username
+    REQUIRED_FIELDS = ['phone_number', 'email', ]
 
     class Meta:
         db_table = "myuser"
+        verbose_name = "用户"
+        verbose_name_plural = verbose_name
 
 
 class UserRegisterForm(forms.ModelForm):
@@ -89,4 +52,5 @@ class UserLoginForm(forms.Form):
     # class Meta:
     #     model = MyUser
     #     fields = ("name", "password")
+
 

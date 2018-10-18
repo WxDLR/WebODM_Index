@@ -19,7 +19,7 @@ from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -78,6 +78,8 @@ INSTALLED_APPS = [
     'codemirror2',
     'compressor',
     'nodeodm',
+    'xadmin',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -163,10 +165,10 @@ AUTHENTICATION_BACKENDS = (
 # Internationalization
 
 LANGUAGE_CODE = 'zh-hans'
-TIME_ZONE = tzlocal.get_localzone().zone
+TIME_ZONE = "Asia/Shanghai"
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

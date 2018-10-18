@@ -1,6 +1,7 @@
 from .task import Task, assets_directory_path
 from django.db import models
 
+
 def image_directory_path(image_upload, filename):
     return assets_directory_path(image_upload.task.id, image_upload.task.project.id, filename)
 
@@ -14,3 +15,7 @@ class ImageUpload(models.Model):
 
     def path(self):
         return self.image.path
+
+    class Meta:
+        verbose_name = "项目图片"
+        verbose_name_plural = verbose_name

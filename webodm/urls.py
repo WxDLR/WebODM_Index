@@ -15,6 +15,7 @@ Including another URLconf
 """
 import os
 
+import xadmin
 from django.conf.urls import include, url
 from django.contrib import admin
 from . import settings
@@ -27,6 +28,7 @@ urlpatterns = [
     url(r'^', include('django.contrib.auth.urls')),
     url(r'^user/', include('app.user_login_urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^xadmin/', xadmin.site.urls),
 ]
 
 if settings.DEBUG:

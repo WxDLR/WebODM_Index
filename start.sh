@@ -1,7 +1,6 @@
 #!/bin/bash
 __dirname=$(cd $(dirname "$0"); pwd -P)
-cd ${__dirname}
-
+cd ${__dirname
 echo -e "\033[92m"      
 echo " _       __     __    ____  ____  __  ___"
 echo "| |     / /__  / /_  / __ \/ __ \/  |/  /"
