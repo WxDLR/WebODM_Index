@@ -1,7 +1,7 @@
 import logging
 
-# from django.contrib.auth.models import User
-from app.models.user import MyUser
+from django.contrib.auth.models import User
+from .user import MyUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone

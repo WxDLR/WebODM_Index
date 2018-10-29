@@ -1,7 +1,7 @@
 import logging
 
-# from django.contrib.auth.models import User
-from app.models.user import MyUser
+from django.contrib.auth.models import User
+from .user import MyUser
 from django.db import models
 from django.db.models import Q
 from django.db.models import signals
@@ -19,7 +19,7 @@ logger = logging.getLogger('app.logger')
 
 
 class Project(models.Model):
-    owner = models.ForeignKey(MyUser, on_delete=models.PROTECT, help_text="The person who created the project",
+    owner = models.ForeignKey(to=MyUser, on_delete=models.PROTECT, help_text="The person who created the project",
                               verbose_name="所有者")
     name = models.CharField(max_length=255, help_text="A label used to describe the project")
     description = models.TextField(default="", blank=True, help_text="More in-depth description of the project")
@@ -55,26 +55,26 @@ class Project(models.Model):
             .only('id', 'project_id')]
 
     class Meta:
-        permissions = (
-            ('view_project', 'Can view project'),
-        )
+        # permissions = (
+        #     ('view_project', 'Can view project'),
+        # )
         verbose_name = "项目"
         verbose_name_plural = verbose_name
 
 
-@receiver(signals.post_save, sender=Project, dispatch_uid="project_post_save")
-def project_post_save(sender, instance, created, **kwargs):
-    """
-    Automatically assigns all permissions to the owner. If the owner changes
-    it's up to the user/developer to remove the previous owner's permissions.
-    """
-    for perm in get_perms_for_model(sender).all():
-        assign_perm(perm.codename, instance.owner, instance)
+# @receiver(signals.post_save, sender=Project, dispatch_uid="project_post_save")
+# def project_post_save(sender, instance, created, **kwargs):
+#     """
+#     Automatically assigns all permissions to the owner. If the owner changes
+#     it's up to the user/developer to remove the previous owner's permissions.
+#     """
+#     for perm in get_perms_for_model(sender).all():
+#         assign_perm(perm.codename, instance.owner, instance)
 
 
-class ProjectUserObjectPermission(UserObjectPermissionBase):
-    content_object = models.ForeignKey(Project, on_delete=models.CASCADE)
-
-
-class ProjectGroupObjectPermission(GroupObjectPermissionBase):
-    content_object = models.ForeignKey(Project, on_delete=models.CASCADE)
+# class ProjectUserObjectPermission(UserObjectPermissionBase):
+#     content_object = models.ForeignKey(Project, on_delete=models.CASCADE)
+#
+#
+# class ProjectGroupObjectPermission(GroupObjectPermissionBase):
+#     content_object = models.ForeignKey(Project, on_delete=models.CASCADE)

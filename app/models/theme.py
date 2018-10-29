@@ -11,6 +11,7 @@ from webodm import settings
 
 logger = logging.getLogger('app.logger')
 
+
 class Theme(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False, help_text="Name of theme")
 

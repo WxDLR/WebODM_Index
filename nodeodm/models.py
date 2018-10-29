@@ -21,18 +21,18 @@ def api(func):
     Catches JSON decoding errors that might happen when the server
     answers unexpectedly
     """
-    def wrapper(*args,**kwargs):
+    def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except (json.decoder.JSONDecodeError, simplejson.JSONDecodeError) as e:
             raise ProcessingError(str(e))
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
             raise ProcessingTimeout(str(e))
-
-
     return wrapper
 
-OFFLINE_MINUTES = 5 # Number of minutes a node hasn't been seen before it should be considered offline
+
+OFFLINE_MINUTES = 5     # Number of minutes a node hasn't been seen before it should be considered offline
+
 
 class ProcessingNode(models.Model):
     hostname = models.CharField(max_length=255, help_text="Hostname or IP address where the node is located (can be an internal hostname as well). If you are using Docker, this is never 127.0.0.1 or localhost. Find the IP address of your host machine by running ifconfig on Linux or by checking your network settings.")
@@ -103,7 +103,8 @@ class ProcessingNode(models.Model):
 
         :returns UUID of the newly created task
         """
-        if len(images) < 2: raise ProcessingError("Need at least 2 images")
+        if len(images) < 2:
+            raise ProcessingError("Need at least 2 images")
 
         api_client = self.api_client()
         try:

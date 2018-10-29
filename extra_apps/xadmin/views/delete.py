@@ -26,7 +26,9 @@ class DeleteAdminView(ModelAdminView):
         super(DeleteAdminView, self).__init__(request, *args, **kwargs)
 
     def init_request(self, object_id, *args, **kwargs):
-        "The 'delete' admin view for this model."
+        '''
+            The 'delete' admin view for this model.
+        '''
         self.obj = self.get_object(unquote(object_id))
 
         if not self.has_delete_permission(self.obj):
@@ -41,7 +43,7 @@ class DeleteAdminView(ModelAdminView):
         # will also be deleted.
         if django_version > (2, 0):
             (self.deleted_objects, model_count, self.perms_needed, self.protected) = get_deleted_objects(
-                [self.obj], self.opts, self.admin_site)
+                [self.obj], self.opts, self.request.user,  self.admin_site, using)
         else:
             (self.deleted_objects, model_count, self.perms_needed, self.protected) = get_deleted_objects(
                 [self.obj], self.opts, self.request.user, self.admin_site, using)

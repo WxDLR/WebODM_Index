@@ -3,7 +3,7 @@ from django.apps import AppConfig
 import xadmin
 from xadmin import views
 
-from app.models import PluginDatum, Project, Preset, Task, ImageUpload, Setting, Theme
+from app.models import PluginDatum, Project, Preset, Task, ImageUpload, Setting, Theme, user
 from nodeodm.models import ProcessingNode
 
 #
@@ -21,6 +21,14 @@ class ProjectAdminx(object):
 xadmin.site.register(Project, ProjectAdminx)
 
 
+class MyUserAdminx(object):
+    fields = ('username', 'password', 'email', 'phone_number')
+    list_display = ('username', 'password', 'email', 'phone_number',)
+
+
+xadmin.site.register(user.MyUser, MyUserAdminx)
+
+
 class TaskAdminx(object):
     list_display = ('name', 'project', 'processing_time', 'status', 'created_at', 'public')
 
@@ -36,6 +44,7 @@ xadmin.site.register(ImageUpload, ImageUploadAdminx)
 
 
 class ProcessingnodeAdminx(object):
+    fields = ('hostname', 'port')
     list_display = ('hostname', 'port', 'api_version', 'queue_count', 'token')
 
 

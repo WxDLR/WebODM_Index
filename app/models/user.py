@@ -1,31 +1,27 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, UserManager, AbstractUser
-from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django import forms
 from uuid import uuid4
 
 
-class MyUser(AbstractUser):
+class MyUser(models.Model):
     id = models.CharField(primary_key=True, max_length=128, default=uuid4, editable=False)
     username = models.CharField(max_length=40, null=False, unique=True)
+    password = models.CharField(max_length=128, )
     phone_number = models.CharField(max_length=11, )
     email = models.EmailField()
     icon = models.ImageField()
 
-    is_staff = models.BooleanField(
-        # _('staff status'),
-        default=False,
-    )
     is_active = models.BooleanField(
         # _('active'),
         default=True,
     )
+    # To Do
+    # to active the user
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['phone_number', 'email', ]
+    def __str__(self):
+        return self.username
 
     class Meta:
-        db_table = "myuser"
         verbose_name = "用户"
         verbose_name_plural = verbose_name
 

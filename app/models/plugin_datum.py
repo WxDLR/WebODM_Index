@@ -1,9 +1,10 @@
 import logging
 from django.db import models
 from django.contrib.postgres import fields
-# from django.contrib.auth.models import User
-from app.models.user import MyUser
+from django.contrib.auth.models import User
+from .user import MyUser
 logger = logging.getLogger('app.logger')
+
 
 class PluginDatum(models.Model):
     key = models.CharField(max_length=255, help_text="Setting key", db_index=True)

@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger('app.logger')
 
+
 @receiver(signals.post_save, sender=User, dispatch_uid="user_check_default_group")
 def check_default_group(sender, instance, created, **kwargs):
     if created:

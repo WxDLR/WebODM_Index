@@ -21,9 +21,10 @@ class TaskIDsSerializer(serializers.BaseSerializer):
     def to_representation(self, obj):
         return obj.id
 
+
 class TaskSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=models.Project.objects.all())
-    processing_node = serializers.PrimaryKeyRelatedField(queryset=ProcessingNode.objects.all()) 
+    processing_node = serializers.PrimaryKeyRelatedField(queryset=ProcessingNode.objects.all())
     images_count = serializers.SerializerMethodField()
     can_rerun_from = serializers.SerializerMethodField()
 
@@ -43,7 +44,8 @@ class TaskSerializer(serializers.ModelSerializer):
         :return: array of valid rerun-from parameters
         """
         if obj.processing_node is not None:
-            rerun_from_option = list(filter(lambda d: 'name' in d and d['name'] == 'rerun-from', obj.processing_node.available_options))
+            rerun_from_option = list(
+                filter(lambda d: 'name' in d and d['name'] == 'rerun-from', obj.processing_node.available_options))
             if len(rerun_from_option) > 0 and 'domain' in rerun_from_option[0]:
                 return rerun_from_option[0]['domain']
 
@@ -51,8 +53,10 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Task
-        exclude = ('console_output', 'orthophoto_extent', 'dsm_extent', 'dtm_extent', )
-        read_only_fields = ('processing_time', 'status', 'last_error', 'created_at', 'pending_action', 'available_assets', )
+        exclude = ('console_output', 'orthophoto_extent', 'dsm_extent', 'dtm_extent',)
+        read_only_fields = (
+            'processing_time', 'status', 'last_error', 'created_at', 'pending_action', 'available_assets',)
+
 
 class TaskViewSet(viewsets.ViewSet):
     """
@@ -61,15 +65,16 @@ class TaskViewSet(viewsets.ViewSet):
     Once a processing node completes processing, results are stored in the task.
     """
     queryset = models.Task.objects.all().defer('orthophoto_extent', 'dsm_extent', 'dtm_extent', 'console_output', )
-    
+
     # We don't use object level permissions on tasks, relying on
     # project's object permissions instead (but standard model permissions still apply)
-    permission_classes = (permissions.DjangoModelPermissions, )
-    parser_classes = (parsers.MultiPartParser, parsers.JSONParser, parsers.FormParser, )
+    # permission_classes = (permissions.DjangoModelPermissions, )
+    parser_classes = (parsers.MultiPartParser, parsers.JSONParser, parsers.FormParser,)
     ordering_fields = '__all__'
 
-    def set_pending_action(self, pending_action, request, pk=None, project_pk=None, perms=('change_project', )):
-        get_and_check_project(request, project_pk, perms)
+    # perms=('delete_project', )
+    def set_pending_action(self, pending_action, request, pk=None, project_pk=None, ):
+        # get_and_check_project(request, project_pk, perms)
         try:
             task = self.queryset.get(pk=pk, project=project_pk)
         except (ObjectDoesNotExist, ValidationError):
@@ -94,7 +99,8 @@ class TaskViewSet(viewsets.ViewSet):
 
     @detail_route(methods=['post'])
     def remove(self, *args, **kwargs):
-        return self.set_pending_action(pending_actions.REMOVE, *args, perms=('delete_project', ), **kwargs)
+        # perms=('delete_project', )
+        return self.set_pending_action(pending_actions.REMOVE, *args, **kwargs)
 
     @detail_route(methods=['get'])
     def output(self, request, pk=None, project_pk=None):
@@ -112,7 +118,6 @@ class TaskViewSet(viewsets.ViewSet):
         line_num = max(0, int(request.query_params.get('line', 0)))
         output = task.console_output or ""
         return Response('\n'.join(output.rstrip().split('\n')[line_num:]))
-
 
     def list(self, request, project_pk=None):
         get_and_check_project(request, project_pk)
@@ -132,13 +137,10 @@ class TaskViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request, project_pk=None):
-        project = get_and_check_project(request, project_pk, ('change_project', ))
-        
+        project = get_and_check_project(request, project_pk, ('change_project',))
         # MultiValueDict in, flat array of files out
-        files = [file for filesList in map(
-                        lambda key: request.FILES.getlist(key), 
-                        [keys for keys in request.FILES])
-                    for file in filesList]
+        files = [file for filesList in map(lambda key: request.FILES.getlist(key), [keys for keys in request.FILES]) for
+                 file in filesList]
 
         if len(files) <= 1:
             raise exceptions.ValidationError(detail="Cannot create task, you need at least 2 images")
@@ -159,9 +161,8 @@ class TaskViewSet(viewsets.ViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
     def update(self, request, pk=None, project_pk=None, partial=False):
-        get_and_check_project(request, project_pk, ('change_project', ))
+        get_and_check_project(request, project_pk, ('change_project',))
         try:
             task = self.queryset.get(pk=pk, project=project_pk)
         except (ObjectDoesNotExist, ValidationError):
@@ -170,7 +171,7 @@ class TaskViewSet(viewsets.ViewSet):
         # Check that a user has access to reassign a project
         if 'project' in request.data:
             try:
-                get_and_check_project(request, request.data['project'], ('change_project', ))
+                get_and_check_project(request, request.data['project'], ('change_project',))
             except exceptions.NotFound:
                 raise exceptions.PermissionDenied()
 
@@ -190,7 +191,7 @@ class TaskViewSet(viewsets.ViewSet):
 
 class TaskNestedView(APIView):
     queryset = models.Task.objects.all().defer('orthophoto_extent', 'dtm_extent', 'dsm_extent', 'console_output', )
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_and_check_task(self, request, pk, annotate={}):
         try:
@@ -238,11 +239,12 @@ class TaskTilesJson(TaskNestedView):
         extent = extent_map[tile_type]
 
         if extent is None:
-            raise exceptions.ValidationError("A {} has not been processed for this task. Tiles are not available.".format(tile_type))
+            raise exceptions.ValidationError(
+                "A {} has not been processed for this task. Tiles are not available.".format(tile_type))
 
         json = get_tile_json(task.name, [
-                '/api/projects/{}/tasks/{}/{}/tiles/{{z}}/{{x}}/{{y}}.png'.format(task.project.id, task.id, tile_type)
-            ], extent.extent)
+            '/api/projects/{}/tasks/{}/{}/tiles/{{z}}/{{x}}/{{y}}.png'.format(task.project.id, task.id, tile_type)
+        ], extent.extent)
         return Response(json)
 
 
@@ -250,34 +252,39 @@ class TaskTilesJson(TaskNestedView):
 Task downloads are simply aliases to download the task's assets
 (but require a shorter path and look nicer the API user)
 """
+
+
 class TaskDownloads(TaskNestedView):
-        def get(self, request, pk=None, project_pk=None, asset=""):
-            """
-            Downloads a task asset (if available)
-            """
-            task = self.get_and_check_task(request, pk)
+    def get(self, request, pk=None, project_pk=None, asset=""):
+        """
+        Downloads a task asset (if available)
+        """
+        task = self.get_and_check_task(request, pk)
 
-            # Check and download
-            try:
-                asset_path = task.get_asset_download_path(asset)
-            except FileNotFoundError:
-                raise exceptions.NotFound("Asset does not exist")
+        # Check and download
+        try:
+            asset_path = task.get_asset_download_path(asset)
+        except FileNotFoundError:
+            raise exceptions.NotFound("Asset does not exist")
 
-            if not os.path.exists(asset_path):
-                raise exceptions.NotFound("Asset does not exist")
+        if not os.path.exists(asset_path):
+            raise exceptions.NotFound("Asset does not exist")
 
-            asset_filename = os.path.basename(asset_path)
+        asset_filename = os.path.basename(asset_path)
 
-            file = open(asset_path, "rb")
-            response = HttpResponse(FileWrapper(file),
-                                    content_type=(mimetypes.guess_type(asset_filename)[0] or "application/zip"))
-            response['Content-Disposition'] = "attachment; filename={}".format(asset)
-            return response
+        file = open(asset_path, "rb")
+        response = HttpResponse(FileWrapper(file),
+                                content_type=(mimetypes.guess_type(asset_filename)[0] or "application/zip"))
+        response['Content-Disposition'] = "attachment; filename={}".format(asset)
+        return response
+
 
 """
 Raw access to the task's asset folder resources
 Useful when accessing a textured 3d model, or the Potree point cloud data
 """
+
+
 class TaskAssets(TaskNestedView):
     def get(self, request, pk=None, project_pk=None, unsafe_asset_path=""):
         """
@@ -301,3 +308,14 @@ class TaskAssets(TaskNestedView):
                                 content_type=(mimetypes.guess_type(asset_filename)[0] or "application/zip"))
         response['Content-Disposition'] = "inline; filename={}".format(asset_filename)
         return response
+
+
+class MyTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Task
+        fields = ('project', 'name', 'processing_node', 'status', 'options', 'pending_action')
+
+
+class MyTaskViewSet(viewsets.ModelViewSet):
+    queryset = models.Task.objects.all().order_by('created_at')
+    serializer_class = MyTaskSerializer

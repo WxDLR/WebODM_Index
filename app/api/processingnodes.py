@@ -16,7 +16,8 @@ class ProcessingNodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProcessingNode
-        fields = '__all__'
+        fields = ('hostname', 'port', 'online')
+
 
 class ProcessingNodeFilter(FilterSet):
     has_available_options = django_filters.CharFilter(method='filter_has_available_options')
@@ -55,7 +56,8 @@ class ProcessingNodeOptionsView(APIView):
 
     def get(self, request):
 
-        nodes = get_objects_for_user(request.user, 'view_processingnode', ProcessingNode, accept_global_perms=False)
+        # nodes = get_objects_for_user(request.user, 'view_processingnode', ProcessingNode, accept_global_perms=False)
+        nodes = ProcessingNode.objects.all()
         common_options = []
 
         for node in nodes:

@@ -89,8 +89,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # use for MyUser Authentication
+    'app.middleware.MyUserAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+
+
 ]
 
 ROOT_URLCONF = 'webodm.urls'
@@ -154,7 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Personal User Fields
-AUTH_USER_MODEL = 'app.myuser'
+AUTH_USER_MODEL = 'auth.User'
 
 # Hook guardian
 AUTHENTICATION_BACKENDS = (
@@ -270,19 +274,18 @@ MESSAGE_TAGS = {
 # REST setup
 # Use Django's standard django.contrib.auth permissions (no anonymous usage)
 REST_FRAMEWORK = {
-  'DEFAULT_PERMISSION_CLASSES': [
-    'app.permissions.GuardianObjectPermissions',
-  ],
+  # 'DEFAULT_PERMISSION_CLASSES': [
+  #   # 'app.permissions.GuardianObjectPermissions',
+  # ],
   'DEFAULT_FILTER_BACKENDS': [
-    'rest_framework.filters.DjangoObjectPermissionsFilter',
+    # 'rest_framework.filters.DjangoObjectPermissionsFilter',
     'django_filters.rest_framework.DjangoFilterBackend',
     'rest_framework.filters.OrderingFilter',
   ],
   'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework.authentication.SessionAuthentication',
-    'rest_framework.authentication.BasicAuthentication',
-    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-    'app.api.authentication.JSONWebTokenAuthenticationQS',
+    # 'rest_framework.authentication.SessionAuthentication',
+    # 'rest_framework.authentication.BasicAuthentication',
+    'app.api.authentication.JSONWebTokenAuthentication',
   ),
   'PAGE_SIZE': 10,
   'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

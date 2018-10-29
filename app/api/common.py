@@ -25,8 +25,8 @@ def get_and_check_project(request, project_pk, perms=('view_project',)):
     """
     try:
         project = models.Project.objects.get(pk=project_pk, deleting=False)
-        for perm in perms:
-            if not request.user.has_perm(perm, project): raise ObjectDoesNotExist()
+        # for perm in perms:
+        #     if not request.user.has_perm(perm, project): raise ObjectDoesNotExist()
     except ObjectDoesNotExist:
         raise exceptions.NotFound()
     return project

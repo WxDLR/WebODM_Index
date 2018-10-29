@@ -13,6 +13,7 @@ from webodm import settings
 
 urlpatterns = [
     url(r'^index', app_views.index, name="index"),
+    url(r'^model', app_views.model, name='model'),
 
     url(r'^welcome/$', app_views.welcome, name='welcome'),
     url(r'^dashboard/$', app_views.dashboard, name='dashboard'),
@@ -31,6 +32,8 @@ urlpatterns = [
     url(r'img/', app_views.image_upload, name='img'),
 
     url(r'^api/', include("app.api.urls")),
+
+    url(r'^task_test/(?P<project_pk>[\d]+)/', app_views.task_test, name='task_test')
 ]
 
 

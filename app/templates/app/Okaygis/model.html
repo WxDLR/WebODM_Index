@@ -1,0 +1,262 @@
+﻿<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Model</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/app/img/logo512.png">
+    
+    <!-- All css files are included here. -->
+    <!-- Bootstrap fremwork main css -->
+    <link rel="stylesheet" href="static/Okaygis/css/bootstrap.min.css">
+    <!-- This core.css file contents all plugings css file. -->
+    <link rel="stylesheet" href="static/Okaygis/css/core.css">
+    <!-- Theme shortcodes/elements style -->
+    <link rel="stylesheet" href="static/Okaygis/css/shortcode/shortcodes.css">
+    <!-- Theme main style -->
+    <link rel="stylesheet" href="static/Okaygis/style.css">
+    <!-- Responsive css -->
+    <link rel="stylesheet" href="static/Okaygis/css/responsive.css">
+    <!-- Style customizer (Remove these two lines please) -->
+    <link rel="stylesheet" href="static/Okaygis/css/style-customizer.css">
+    <link href="#" data-style="styles" rel="stylesheet">
+    
+    <!-- Modernizr JS -->
+    <script src="static/Okaygis/js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
+
+<body>
+    <!--[if lt IE 8]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->  
+    <!-- Body main wrapper start -->
+    <div class="wrapper">
+        <!-- Start of header area -->
+        <header class="header-area">
+            <div class="header-top navy-bg ptb-20">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="header-top-info">
+                                <ul>
+                                    <li>
+                                        <a href="#">
+                                            <i class="icofont icofont-ui-call"></i>
+                                            热线电话  16602035452
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i class="icofont icofont-envelope"></i>
+                                            邮箱  duanlerong@live.com
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 hidden-xs">
+                            <div class="header-top-right f-right">
+                                <div class="header-top-language f-left">
+                                    <ul>
+                                        <li><a href="#" data-toggle="dropdown">{{ request.myuser }}<i class="icofont icofont-simple-down"></i></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="/user/mine">我的模型</a></li>
+                                                <li><a href="#">我的钱包</a></li>
+                                                <li><a href="#">我的设置</a></li>
+                                                <li><a href="/user/logout">登出</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-bottom stick-h2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <div class="logo">
+{#                                <a href="index.html"><img src="static/Okaygis/images/logo/logo.png" alt=""> </a>#}
+                            </div>
+                        </div>
+                        <div class="col-md-8 hidden-sm hidden-xs">
+                            <div class="menu-area f-right">
+                                <nav>
+                                     <ul>
+                                        <li><a href="{% url 'index' %}">首页</a></li>
+                                        <li><a href="{% url 'model' %}">模型</a></li>
+										<li><a href="#">教程</a></li>
+										<li><a href="#">社区</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- mobile-menu-area start -->
+        <div class="mobile-menu-area">
+            <div class="container">
+                <div class="row">
+                    <div class="hidden-lg hidden-md col-sm-12 col-xs-12">
+                        </div>					
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- mobile-menu-area end -->
+        <!-- End of header area -->
+        <section class="breadcrumbs-area bg-3 ptb-110 bg-opacity bg-relative">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="breadcrumbs">
+                            <h2 class="page-title">Okaygis</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Start page content -->
+        <section class="news-page-area ptb-110">
+            <div class="container">
+                <div class="row">
+                    {% for foo in projects %}
+                        {% for fooo in foo.tasks %}
+                        <div class="col-md-4 col-sm-6">
+                            <div class="news-are mrg-xs">
+                                <div class="news-img">
+                                    <img src="{{ MEDIA_URL }}project/{{ foo.id }}/task/{{ fooo }}/assets/odm_orthophoto/odm_orthophoto.png" alt="Okay" >
+                                    <div class="news-date navy-bg">
+                                        <div class="blog-meta-2">
+                                            <span class="published3">
+                                                <i class="icofont icofont-ui-calendar"></i>
+                                                {{ foo.created_at }}
+                                            </span>
+                                        </div>
+                                        <div class="blog-meta for-news">
+                                            <span class="published3">
+                                                <a href="#">
+                                                    <i class="icofont icofont-eye"></i> 34
+                                                </a>
+                                            </span>
+                                            <span class="published4">
+                                                <a href="#">
+                                                    <i class="icofont icofont-comment"></i> 20
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="img-text gray-bg">
+                                    <h3>Project Name:<a href="#">{{ foo.name }}</a></h3>
+                                    <p>{{ foo.description }}</p>
+                                    <a class="button extra-small" href="/api/projects/{{ foo.id }}/tasks/{{ fooo }}">
+                                        <span>详情</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                <div class="row">
+                    <div class="col-md-12 text-center pt-20">
+                        <div class="pages2">
+                            <ul>
+                                <li><a href="#">01</a></li>
+                                <li><a href="#">02</a></li>
+                                <li class="active"><a href="#">03</a></li>
+                                <li><a href="#">04</a></li>
+                                <li><a href="#">05</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End page content -->
+        <!-- Start footer area -->
+        <footer class="footer-area">
+            <div class="footer-top ptb-110 navy-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="footer-logo-address">
+                                <div class="footer-logo">
+                                    <a href="#"><img src="static/app/img/logo512.png" alt="" style="height: 50px;width: 50px;"></a>
+                                </div>
+                                <div class="footer-address">
+                                    <div class="header-top-info">
+                                        <ul>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="icofont icofont-ui-call"></i>
+                                                    热线电话  16602035452
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="icofont icofont-envelope"></i>
+                                                    邮箱  duanlerong@live.com
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="icofont icofont-location-pin"></i>
+                                                    科学城科学大道162号创意大厦B214层
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="footer-bottom-text ptb-20">
+                                <p>
+                                    Copyright &copy; 2017.Company name All rights reserved.More Templates <a href="http://www.okaygis.com/" target="_blank" title="模板之家">欧科信息科技有限公司</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <div id="toTop">
+            <i class="fa fa-chevron-up"></i>
+        </div>
+
+    </div>
+    
+    
+    
+    
+    <!-- Placed js at the end of the document so the pages load faster -->
+    <!-- jquery latest version -->
+    <script src="static/Okaygis/js/vendor/jquery-1.12.0.min.js"></script>
+    <!-- Bootstrap framework js -->
+    <script src="static/Okaygis/js/bootstrap.min.js"></script>
+    <!-- ajax-mail JSfooter-top ptb-110 navy-bg
+    ============================================ -->		
+    <script src="static/Okaygis/js/ajax-mail.js"></script>
+    <!-- All js plugins included in this file. -->
+    <script src="static/Okaygis/js/plugins.js"></script>
+    <script src="static/Okaygis/js/main.js"></script>
+
+</body>
+
+</html>

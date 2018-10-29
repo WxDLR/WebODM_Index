@@ -1,13 +1,14 @@
 from django.http import JsonResponse
 from django.views import View
 from guardian.shortcuts import get_perms
-from rest_framework import serializers, viewsets, status
+from rest_framework import serializers, viewsets, status, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from app import models
 from app.models import Project
+from app.models.user import MyUser
 from .tasks import TaskIDsSerializer
 from .MyUsers import MyUserSerializer
 
@@ -22,14 +23,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     #     )
     owner = MyUserSerializer(read_only=True, )
     created_at = serializers.ReadOnlyField()
-    permissions = serializers.SerializerMethodField()
+    # permissions = serializers.SerializerMethodField()
 
-    def get_permissions(self, obj):
-        if 'request' in self.context:
-            return list(map(lambda p: p.replace("_project", ""), get_perms(self.context['request'].user, obj)))
-        else:
-            # Cannot list permissions, no user is associated with request (happens when serializing ui test mocks)
-            return []
+    # def get_permissions(self, obj):
+    #     if 'request' in self.context:
+    #         return list(map(lambda p: p.replace("_project", ""), get_perms(self.context['request'].user, obj)))
+    #     else:
+    #         # Cannot list permissions, no user is associated with request (happens when serializing ui test mocks)
+    #         return []
 
     class Meta:
         model = models.Project
@@ -37,7 +38,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectsPagination(PageNumberPagination):
-    page_size = 3
+    page_size = 5
 
     # Client can control the page using this query parameter.
     page_query_param = 'page'
@@ -61,6 +62,25 @@ class ProjectFilter(FilterSet):
         fields = ['high', 'low']
 
 
+class ProjectPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        try:
+            MyUser.objects.get(username=request.myuser)
+            return True
+
+        except MyUser.DoesNotExist:
+            return False
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Instance must have an attribute named `owner`.
+        return obj.owner == request.myuser
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     """
     Project get/add/delete/update
@@ -75,6 +95,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectsPagination
     filter_backends = (DjangoFilterBackend, )
     filter_class = ProjectFilter
+    permission_classes = (ProjectPermission,)
+
+
+
+
 
 
 

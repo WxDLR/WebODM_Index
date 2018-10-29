@@ -268,7 +268,8 @@
                 </li>
                 {% endif %}
 
-                {% if user.is_staff %}
+{#                {% if user.is_staff %}#}
+                {% if user %}
                 <li>
                     <a href="/admin/"><i class="fa fa-gears fa-fw"></i> {% trans 'Administration' %}</a>
                 </li>
@@ -277,7 +278,8 @@
                     <a href="/api/"><i class="fa fa-book fa-fw"></i> {% trans 'API' %}</a>
                 </li>
 
-                {% if user.is_staff %}
+{#                {% if user.is_staff %}#}
+                {% if user %}
                 <li>
                     <a href="#"><i class="fa fa-magic fa-fw"></i> {% trans 'Customize' %}<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">

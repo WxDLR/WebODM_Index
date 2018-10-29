@@ -4,7 +4,9 @@ from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core import serializers
+from django.db import transaction
 
+from app.models import image_upload
 from app.models.user import MyUser
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,22 +16,25 @@ from guardian.shortcuts import get_objects_for_user
 from nodeodm.models import ProcessingNode
 from app.models import Project, Task
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from django import forms
 from app.api.projects import ProjectSerializer
 
 
-# @login_required(login_url=r'/user/login/')
 def index(request):
-    queryset = Project.objects.filter(task__status=40)
+    queryset = Project.objects.all()
     serialize = ProjectSerializer(queryset, many=True)
-    print(serialize.data)
-    return render(request, 'index.html', context={"projects": serialize.data})
+    # print(serialize.data)
+    return render(request, 'Okaygis/index.html', context={"projects": serialize.data})
 
 
-# @login_required
+def model(request):
+    queryset = Project.objects.all()
+    serialize = ProjectSerializer(queryset, many=True)
+    return render(request, 'Okaygis/model.html', context={"projects": serialize.data})
+
+
 def dashboard(request):
     myuser = MyUser.objects.filter(id=request.COOKIES.get('Okaygis_id')).first()
     no_processingnodes = ProcessingNode.objects.count() == 0
@@ -39,13 +44,13 @@ def dashboard(request):
     if Project.objects.count() == 0:
         Project.objects.create(owner=myuser, name=_("First Project"))
 
-    return render(request, 'app/dashboard.html', {'title': 'Dashboard',
+    return render(request, 'app/dashboard.html', {
+        'title': 'Dashboard',
         'no_processingnodes': no_processingnodes,
         'no_tasks': no_tasks
     })
 
 
-# @login_required
 def map(request, project_pk=None, task_pk=None):
     title = _("Map")
 
@@ -161,6 +166,7 @@ def models(request):
     return render(request, 'models.html', context={'projectlist': serializer.data})
 
 from app.models import ImageUpload
+from app.api.tasks import TaskSerializer
 
 def image_upload(request):
     if request.method == "POST":
@@ -169,7 +175,25 @@ def image_upload(request):
             task = Task.objects.filter(id="20cf5374-02ca-4aa4-ada8-6b8375c719fa").first()
             image = ImageUpload(task=task, image=img)
             image.save()
-            return HttpResponse(content="hello")
+        return HttpResponse(content="hello")
     else:
         return render(request, 'imageupload.html')
+
+
+def task_test(request, project_pk=None):
+    if request.method == "GET":
+        # form = TaskForm()
+        return render(request, 'imageupload.html')
+    else:
+        project = Project.objects.get(pk=project_pk)
+        file_list = request.FILES.getlist(key="img")
+        with transaction.atomic():
+            task = Task.objects.create(project=project, )
+            for file in file_list:
+                ImageUpload.objects.create(task=task, image=file)
+            task.name = request.POST.get('name')
+            task.options = request.POST.get('options')
+            task.save()
+            return HttpResponse(status=200, content="Ok")
+
 

@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
 ]
 
+
 if settings.DEBUG:
     urlpatterns += [
         # Expose imagekit generated files and settings file uploads

@@ -18,6 +18,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction
 from django.utils import timezone
+from django import forms
 
 from app import pending_actions
 from django.contrib.gis.db.models.fields import GeometryField
@@ -58,7 +59,8 @@ def validate_task_options(value):
     """
     Make sure that the format of this options field is valid
     """
-    if len(value) == 0: return
+    if len(value) == 0:
+        return
 
     try:
         for option in value:
@@ -110,7 +112,6 @@ def resize_image(image_path, resize_to):
     return {'path': image_path, 'resize_ratio': ratio}
 
 
-
 class Task(models.Model):
     ASSETS_MAP = {
             'all.zip': 'all.zip',
@@ -154,9 +155,12 @@ class Task(models.Model):
     auto_processing_node = models.BooleanField(default=True, help_text="A flag indicating whether this task should be automatically assigned a processing node")
     status = models.IntegerField(choices=STATUS_CODES, db_index=True, null=True, blank=True, help_text="Current status of the task")
     last_error = models.TextField(null=True, blank=True, help_text="The last processing error received")
-    options = fields.JSONField(default=dict(), blank=True, help_text="Options that are being used to process this task", validators=[validate_task_options])
-    available_assets = fields.ArrayField(models.CharField(max_length=80), default=list(), blank=True, help_text="List of available assets to download")
-    console_output = models.TextField(null=False, default="", blank=True, help_text="Console output of the OpenDroneMap's process")
+    options = fields.JSONField(default=dict(), blank=True, help_text="Options that are being used to process this task",
+                               validators=[validate_task_options])
+    available_assets = fields.ArrayField(models.CharField(max_length=80), default=list(), blank=True,
+                                         help_text="List of available assets to download")
+    console_output = models.TextField(null=False, default="", blank=True,
+                                      help_text="Console output of the OpenDroneMap's process")
     ground_control_points = models.FileField(null=True, blank=True, upload_to=gcp_directory_path, help_text="Optional Ground Control Points file to use for processing")
 
     orthophoto_extent = GeometryField(null=True, blank=True, srid=4326, help_text="Extent of the orthophoto created by OpenDroneMap")
@@ -660,8 +664,15 @@ class Task(models.Model):
             return None
 
     class Meta:
-        permissions = (
-            ('view_task', 'Can view task'),
-        )
+        # permissions = (
+        #     ('view_task', 'Can view task'),
+        # )
         verbose_name = "任务"
         verbose_name_plural = verbose_name
+
+
+# class TaskForm(forms.ModelForm):
+#
+#     class Meta:
+#         model = Task
+#         fields = "__all__"
