@@ -21,12 +21,12 @@ logger = logging.getLogger('app.logger')
 class Project(models.Model):
     owner = models.ForeignKey(to=MyUser, on_delete=models.PROTECT, help_text="The person who created the project",
                               verbose_name="所有者")
+    cover = models.ImageField(default="/logo512.png")
     name = models.CharField(max_length=255, help_text="A label used to describe the project")
     description = models.TextField(default="", blank=True, help_text="More in-depth description of the project")
     created_at = models.DateTimeField(default=timezone.now, help_text="Creation date")
     deleting = models.BooleanField(db_index=True, default=False,
                                    help_text="是否删除")
-
     def delete(self, *args):
         # No tasks?
         if self.task_set.count() == 0:

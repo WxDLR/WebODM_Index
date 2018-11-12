@@ -190,7 +190,7 @@ STATICFILES_FINDERS = [
 ]
 
 # File Uploads
-FILE_UPLOAD_MAX_MEMORY_SIZE = 4718592 # 4.5 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 4718592  # 4.5 MB
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 FILE_UPLOAD_HANDLERS = [
@@ -268,15 +268,16 @@ MEDIA_TMP = os.path.join(MEDIA_ROOT, 'tmp')
 # Store flash messages in cookies
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 MESSAGE_TAGS = {
-    messages.ERROR: 'danger' # Bootstrap 3 compatibility
+    messages.ERROR: 'danger'  # Bootstrap 3 compatibility
 }
 
 # REST setup
 # Use Django's standard django.contrib.auth permissions (no anonymous usage)
 REST_FRAMEWORK = {
-  # 'DEFAULT_PERMISSION_CLASSES': [
-  #   # 'app.permissions.GuardianObjectPermissions',
-  # ],
+  'DEFAULT_PERMISSION_CLASSES': [
+    'app.permissions.GuardianObjectPermissions',
+    'guardian.backends.ObjectPermissionBackend',
+  ],
   'DEFAULT_FILTER_BACKENDS': [
     # 'rest_framework.filters.DjangoObjectPermissionsFilter',
     'django_filters.rest_framework.DjangoFilterBackend',

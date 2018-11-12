@@ -38,7 +38,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectsPagination(PageNumberPagination):
-    page_size = 5
+    page_size = 3
 
     # Client can control the page using this query parameter.
     page_query_param = 'page'
@@ -59,7 +59,7 @@ class ProjectFilter(FilterSet):
 
     class Meta:
         model = Project
-        fields = ['high', 'low']
+        fields = ['high', 'low', 'deleting']
 
 
 class ProjectPermission(permissions.BasePermission):
@@ -98,8 +98,21 @@ class ProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (ProjectPermission,)
 
 
+class MyProjectPagenation(PageNumberPagination):
+    page_size = 3
 
 
+class MyProjectViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjectSerializer
+    pagination_class = MyProjectPagenation
+    filter_class = ProjectFilter
+    permission_classes = (ProjectPermission,)
+
+    def get_queryset(self):
+        if self.request.META:
+            return models.Project.objects.filter(owner=self.request.myuser).order_by('-created_at')
+        else:
+            return models.Project.objects.prefetch_related('task_set').filter(deleting=False).order_by('created_at')
 
 
 

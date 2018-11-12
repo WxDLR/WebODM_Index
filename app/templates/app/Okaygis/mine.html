@@ -28,7 +28,29 @@
     <link href="#" data-style="styles" rel="stylesheet">
 
     <!-- Modernizr JS -->
-    <script src="static/Okaygis/js/vendor/modernizr-2.8.3.min.js"></script>
+{#    <script src="static/Okaygis/js/vendor/modernizr-2.8.3.min.js"></script>#}
+    <style>
+        #project{
+            width: 100%;height: 152px;padding: 4px;background: darkgrey;margin-top: 10px;
+            border-radius: 10px;
+        }
+        #project img{
+            float: left;height: 144px;margin-left:0;
+        }
+        .project-info{
+            width: 80%;float: right;height: 144px;margin-left: 10px
+        }
+        .project-info li{
+            height: 48px;
+        }
+        .project-info li button{
+            height: 48px;color: black;float: right;margin-right: 20px;
+        }
+        .project-info li p{
+            float: left;height: 48px;line-height: 48px;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -142,25 +164,55 @@
                 <div class="nav-detail" style="height: 40px;">
                     <P style="height: 39px;width: 80px; float: left;text-align: center;line-height: 39px;font-size: 18pxpx;">
                         模型状态：</P><input type="text" style="width: 100px; float: left;height: 39px;">
+
+                    <!-- Split button -->
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-danger">全部</button>
+                      <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a id = 'filter_project_false'>已完成</a></li>
+                        <li><a id = 'filter_project_true'>未完成</a></li>
+                      </ul>
+                    </div>
+
+
                     <button type="button" onclick="" id="search"
                             style="color: black;float: right; width: 100px;height: 40px;">Search
                     </button>
+
                     <input type="text" style="float: right; width: 100px;height: 39px;" id="search">
                 </div>
-                <!--<div id="project" style="width: 100%;height: 160px;padding: 4px;background: darkgrey;margin-top: 10px;">
-                    <img src="{% static 'app/img/logo512.png' %}" alt="icon"
-                         style="float: left;height: 152px;margin-left:0;">
-                    <div class="project-info" style="width: 80%;float: right;height: 152px;margin-left: 10px">
-                        <li style="height: 38px;"><p id="project_name">ProjectName</p></li>
-                        <li style="height: 38px;"><p>ProjectCreatedAt</p></li>
-                        <li style="height: 38px;"><p>ProjectLabel</p></li>
-                        <li style="height: 38px;"><p style="float: left;height: 38px;line-height: 38px;">
-                            ProjectStatusCode</p>
-                            <button style="height: 38px;color: black;float: right;">Delete</button>
-                            <button style="height: 38px;color: black;float: right">Continue</button>
-                        </li>
-                    </div>
-                </div>-->
+                <p id="filter_cookie" filter="lol"></p>
+                <div id="project_list"></div>
+{#                <div id="project">#}
+{#                    <img src="{% static 'app/img/logo512.png' %}" alt="icon">#}
+{#                    <div class="project-info">#}
+{#                        <li><p id="project_name">ProjectName</p></li>#}
+{#                        <li><p>ProjectCreatedAt</p></li>#}
+{#                        <li><p>ProjectsLabel</p>#}
+{#                            <button>Delete</button>#}
+{#                            <button>Continue</button>#}
+{#                        </li>#}
+{#                    </div>#}
+{#                </div>#}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+{#                        <li>#}
+{#                            <a href="#" aria-label="Previous">#}
+{#                                <span aria-hidden="true">&laquo;</span>#}
+{#                            </a>#}
+{#                        </li>#}
+{##}
+{#                        <li>#}
+{#                            <a href="#" aria-label="Next">#}
+{#                                <span aria-hidden="true">&raquo;</span>#}
+{#                            </a>#}
+{#                        </li>#}
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -236,26 +288,80 @@
 <script>
     $(document).ready(function () {
         $.get(
-            "/api/projects/",
+            "/api/my_projects/",
             function (data) {
-
-                for(let i in data.results){
-                    for(let j in data.results[i].tasks){
-                        let project_info = "<div id=\"project\" style=\"width: 100%;height: 160px;padding: 4px;background: darkgrey;margin-top: 10px;\">\n" +
-                        "                        <img src=\""+"/media/project/"+data.results[i].id+"/task/"+data.results[i].tasks[j]+"/assets/odm_orthophoto/odm_orthophoto.png\""+" alt=\"icon\" style=\"float: left;height: 152px;margin-left:0;\">\n" +
-                        "                        <div class=\"project-info\" style=\"width: 80%;float: right;height: 152px;margin-left: 10px\">\n" +
-                        "                            <li style=\"height: 38px;\"><p id=\"project_name\">"+data.results[i].name+"</p></li>\n" +
-                        "                            <li style=\"height: 38px;\"><p>"+data.results[i].created_at.substring(0,10)+"</p></li>\n" +
-                        "                            <li style=\"height: 38px;\"><p>ProjectLabel</p></li>\n" +
-                        "                            <li style=\"height: 38px;\"><p style=\"float: left;height: 38px;line-height: 38px;\">ProjectStatusCode</p><button style=\"height: 38px;color: black;float: right;\">Delete</button><button style=\"height: 38px;color: black;float: right\">Continue</button></li>\n" +
-                        "                        </div>\n" +
-                        "                    </div>"
-                        $(".mine-content").append(project_info)
-                    }
-                };
+                console.log(data);
+                new_project(data);
+                new_li(data);
             }
         );
     });
+
+    function new_project(data) {
+        for (let i in data.results) {
+            let project_info = "<div id=\"project\">\n<img src=\""+data.results[i].cover+"\"" + " alt=\"icon\">\n<div class=\"project-info\">\n" +
+                        "<li><p id=\"project_name\">" + data.results[i].name + "</p></li>\n<li><p>" + data.results[i].created_at.substring(0, 10) + "</p></li>\n" +
+                        "<li><p>ProjectLabel</p><button>Delete</button><button>Continue</button></li>\n" +
+                        "</div>\n</div>";
+            $("#project_list").append(project_info)
+        }
+
+    }
+
+    function new_li(data) {
+        $(".pagination").empty();
+        let pagenum = data.count%3 ? parseInt(data.count/3)+1 : data.count/3;
+        for(let i=0;i<pagenum;i++){
+            let page_li = "<li><a onclick=\"pg(this)\""+"page="+"loo"+">"+(i+1)+"</a></li>";
+            console.log(i);
+            $(".pagination").append(page_li);
+        }
+    }
+
+    function pg (data) {
+        let page = parseInt(data.innerHTML);
+        let filter = $("#filter_cookie").attr('filter');
+        let filter_data = filter==='lol' ? {"page": page,}:{"page": page,"deleting":filter};
+        $.ajax({
+            url:"/api/my_projects/",
+            data:filter_data,
+            success:function (data) {
+                console.log(data);
+                $("#project_list").empty();
+                new_project(data);
+                new_li(data);
+            }
+        })
+    };
+
+    $("#filter_project_true").click(function () {
+        $("#filter_cookie").attr('filter','true');
+        $.ajax({
+            url:"/api/my_projects/",
+            data:{
+                'deleting':$("#filter_cookie").attr('filter'),
+            },
+            success:function (data) {
+                $("#project_list").empty();
+                new_project(data);
+                new_li(data);
+            }
+        })
+    })
+    $("#filter_project_false").click(function () {
+        $("#filter_cookie").attr('filter','false');
+        $.ajax({
+            url:"/api/my_projects/",
+            data:{
+                'deleting':$("#filter_cookie").attr('filter'),
+            },
+            success:function (data) {
+                $("#project_list").empty();
+                new_project(data);
+                new_li(data);
+            }
+        })
+    })
 </script>
 
 </body>

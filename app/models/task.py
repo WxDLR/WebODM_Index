@@ -37,7 +37,6 @@ import subprocess
 logger = logging.getLogger('app.logger')
 
 
-
 def task_directory_path(taskId, projectId):
     return 'project/{0}/task/{1}/'.format(projectId, taskId)
 
@@ -70,7 +69,6 @@ def validate_task_options(value):
         raise ValidationError("Invalid options")
 
 
-
 def resize_image(image_path, resize_to):
     try:
         im = Image.open(image_path)
@@ -80,7 +78,9 @@ def resize_image(image_path, resize_to):
         width, height = im.size
         max_side = max(width, height)
         if max_side < resize_to:
-            logger.warning('You asked to make {} bigger ({} --> {}), but we are not going to do that.'.format(image_path, max_side, resize_to))
+            logger.warning(
+                'You asked to make {} bigger ({} --> {}), but we are not going to do that.'.format(image_path, max_side,
+                                                                                                   resize_to))
             im.close()
             return {'path': image_path, 'resize_ratio': 1}
 
@@ -114,20 +114,20 @@ def resize_image(image_path, resize_to):
 
 class Task(models.Model):
     ASSETS_MAP = {
-            'all.zip': 'all.zip',
-            'orthophoto.tif': os.path.join('odm_orthophoto', 'odm_orthophoto.tif'),
-            'orthophoto.png': os.path.join('odm_orthophoto', 'odm_orthophoto.png'),
-            'orthophoto.mbtiles': os.path.join('odm_orthophoto', 'odm_orthophoto.mbtiles'),
-            'georeferenced_model.las': os.path.join('odm_georeferencing', 'odm_georeferenced_model.las'),
-            'georeferenced_model.laz': os.path.join('odm_georeferencing', 'odm_georeferenced_model.laz'),
-            'georeferenced_model.ply': os.path.join('odm_georeferencing', 'odm_georeferenced_model.ply'),
-            'georeferenced_model.csv': os.path.join('odm_georeferencing', 'odm_georeferenced_model.csv'),
-            'textured_model.zip': {
-                'deferred_path': 'textured_model.zip',
-                'deferred_compress_dir': 'odm_texturing'
-            },
-            'dtm.tif': os.path.join('odm_dem', 'dtm.tif'),
-            'dsm.tif': os.path.join('odm_dem', 'dsm.tif'),
+        'all.zip': 'all.zip',
+        'orthophoto.tif': os.path.join('odm_orthophoto', 'odm_orthophoto.tif'),
+        'orthophoto.png': os.path.join('odm_orthophoto', 'odm_orthophoto.png'),
+        'orthophoto.mbtiles': os.path.join('odm_orthophoto', 'odm_orthophoto.mbtiles'),
+        'georeferenced_model.las': os.path.join('odm_georeferencing', 'odm_georeferenced_model.las'),
+        'georeferenced_model.laz': os.path.join('odm_georeferencing', 'odm_georeferenced_model.laz'),
+        'georeferenced_model.ply': os.path.join('odm_georeferencing', 'odm_georeferenced_model.ply'),
+        'georeferenced_model.csv': os.path.join('odm_georeferencing', 'odm_georeferenced_model.csv'),
+        'textured_model.zip': {
+            'deferred_path': 'textured_model.zip',
+            'deferred_compress_dir': 'odm_texturing'
+        },
+        'dtm.tif': os.path.join('odm_dem', 'dtm.tif'),
+        'dsm.tif': os.path.join('odm_dem', 'dsm.tif'),
     }
 
     STATUS_CODES = (
@@ -147,13 +147,18 @@ class Task(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid_module.uuid4, unique=True, serialize=False, editable=False)
 
-    uuid = models.CharField(max_length=255, db_index=True, default='', blank=True, help_text="Identifier of the task (as returned by OpenDroneMap's REST API)")
+    uuid = models.CharField(max_length=255, db_index=True, default='', blank=True,
+                            help_text="Identifier of the task (as returned by OpenDroneMap's REST API)")
     project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text="Project that this task belongs to")
     name = models.CharField(max_length=255, null=True, blank=True, help_text="A label for the task")
-    processing_time = models.IntegerField(default=-1, help_text="Number of milliseconds that elapsed since the beginning of this task (-1 indicates that no information is available)")
-    processing_node = models.ForeignKey(ProcessingNode, on_delete=models.SET_NULL, null=True, blank=True, help_text="Processing node assigned to this task (or null if this task has not been associated yet)")
-    auto_processing_node = models.BooleanField(default=True, help_text="A flag indicating whether this task should be automatically assigned a processing node")
-    status = models.IntegerField(choices=STATUS_CODES, db_index=True, null=True, blank=True, help_text="Current status of the task")
+    processing_time = models.IntegerField(default=-1,
+                                          help_text="Number of milliseconds that elapsed since the beginning of this task (-1 indicates that no information is available)")
+    processing_node = models.ForeignKey(ProcessingNode, on_delete=models.SET_NULL, null=True, blank=True,
+                                        help_text="Processing node assigned to this task (or null if this task has not been associated yet)")
+    auto_processing_node = models.BooleanField(default=True,
+                                               help_text="A flag indicating whether this task should be automatically assigned a processing node")
+    status = models.IntegerField(choices=STATUS_CODES, db_index=True, null=True, blank=True,
+                                 help_text="Current status of the task")
     last_error = models.TextField(null=True, blank=True, help_text="The last processing error received")
     options = fields.JSONField(default=dict(), blank=True, help_text="Options that are being used to process this task",
                                validators=[validate_task_options])
@@ -161,19 +166,23 @@ class Task(models.Model):
                                          help_text="List of available assets to download")
     console_output = models.TextField(null=False, default="", blank=True,
                                       help_text="Console output of the OpenDroneMap's process")
-    ground_control_points = models.FileField(null=True, blank=True, upload_to=gcp_directory_path, help_text="Optional Ground Control Points file to use for processing")
+    ground_control_points = models.FileField(null=True, blank=True, upload_to=gcp_directory_path,
+                                             help_text="Optional Ground Control Points file to use for processing")
 
-    orthophoto_extent = GeometryField(null=True, blank=True, srid=4326, help_text="Extent of the orthophoto created by OpenDroneMap")
+    orthophoto_extent = GeometryField(null=True, blank=True, srid=4326,
+                                      help_text="Extent of the orthophoto created by OpenDroneMap")
     dsm_extent = GeometryField(null=True, blank=True, srid=4326, help_text="Extent of the DSM created by OpenDroneMap")
     dtm_extent = GeometryField(null=True, blank=True, srid=4326, help_text="Extent of the DTM created by OpenDroneMap")
 
     # mission
     created_at = models.DateTimeField(default=timezone.now, help_text="Creation date")
-    pending_action = models.IntegerField(choices=PENDING_ACTIONS, db_index=True, null=True, blank=True, help_text="A requested action to be performed on the task. The selected action will be performed by the worker at the next iteration.")
+    pending_action = models.IntegerField(choices=PENDING_ACTIONS, db_index=True, null=True, blank=True,
+                                         help_text="A requested action to be performed on the task. The selected action will be performed by the worker at the next iteration.")
 
-    public = models.BooleanField(default=False, help_text="A flag indicating whether this task is available to the public")
-    resize_to = models.IntegerField(default=-1, help_text="When set to a value different than -1, indicates that the images for this task have been / will be resized to the size specified here before processing.")
-
+    public = models.BooleanField(default=False,
+                                 help_text="A flag indicating whether this task is available to the public")
+    resize_to = models.IntegerField(default=-1,
+                                    help_text="When set to a value different than -1, indicates that the images for this task have been / will be resized to the size specified here before processing.")
 
     def __init__(self, *args, **kwargs):
         super(Task, self).__init__(*args, **kwargs)
@@ -186,7 +195,7 @@ class Task(models.Model):
 
         return 'Task [{}] ({})'.format(name, self.id)
 
-    def move_assets(self, old_project_id, new_project_id):
+    def  admove_assets(self, old_project_id, new_project_id):
         """
         Moves the task's folder, update ImageFields and orthophoto files to a new project
         """
@@ -213,11 +222,15 @@ class Task(models.Model):
                         img.save()
 
             else:
-                logger.warning("Project changed for task {}, but either {} doesn't exist, or {} already exists. This doesn't look right, so we will not move any files.".format(self,
-                                                                                                             old_task_folder,
-                                                                                                             new_task_folder))
+                logger.warning(
+                    "Project changed for task {}, but either {} doesn't exist, or {} already exists. This doesn't look right, so we will not move any files.".format(
+                        self,
+                        old_task_folder,
+                        new_task_folder))
         except shutil.Error as e:
-            logger.warning("Could not move assets folder for task {}. We're going to proceed anyway, but you might experience issues: {}".format(self, e))
+            logger.warning(
+                "Could not move assets folder for task {}. We're going to proceed anyway, but you might experience issues: {}".format(
+                    self, e))
 
     def save(self, *args, **kwargs):
         if self.project.id != self.__original_project_id:
@@ -305,10 +318,11 @@ class Task(models.Model):
                     # Assign first online node with lowest queue count
                     self.processing_node = ProcessingNode.find_best_available_node()
                     if self.processing_node:
-                        self.processing_node.queue_count += 1 # Doesn't have to be accurate, it will get overridden later
+                        self.processing_node.queue_count += 1  # Doesn't have to be accurate, it will get overridden later
                         self.processing_node.save()
 
-                        logger.info("Automatically assigned processing node {} to {}".format(self.processing_node, self))
+                        logger.info(
+                            "Automatically assigned processing node {} to {}".format(self.processing_node, self))
                         self.save()
 
                 # Processing node assigned, but is offline and no errors
@@ -317,7 +331,8 @@ class Task(models.Model):
                     # detach processing node, and reassignment
                     # will be processed at the next tick
                     if self.status == status_codes.QUEUED:
-                        logger.info("Processing node {} went offline, reassigning {}...".format(self.processing_node, self))
+                        logger.info(
+                            "Processing node {} went offline, reassigning {}...".format(self.processing_node, self))
                         self.uuid = ''
                         self.processing_node = None
                         self.status = None
@@ -330,7 +345,8 @@ class Task(models.Model):
                         # We can't easily differentiate between the two, so we need
                         # to notify the user because if it crashed due to low memory
                         # the user might need to take action (or be stuck in an infinite loop)
-                        raise ProcessingError("Processing node went offline. This could be due to insufficient memory or a network error.")
+                        raise ProcessingError(
+                            "Processing node went offline. This could be due to insufficient memory or a network error.")
 
             if self.processing_node:
                 # Need to process some images (UUID not yet set and task doesn't have pending actions)?
@@ -359,7 +375,8 @@ class Task(models.Model):
                         try:
                             self.processing_node.cancel_task(self.uuid)
                         except ProcessingException:
-                            logger.warning("Could not cancel {} on processing node. We'll proceed anyway...".format(self))
+                            logger.warning(
+                                "Could not cancel {} on processing node. We'll proceed anyway...".format(self))
 
                         self.status = status_codes.CANCELED
                         self.pending_action = None
@@ -522,7 +539,6 @@ class Task(models.Model):
         except ProcessingTimeout as e:
             logger.warning("{} timed out with error: {}. We'll try reprocessing at the next tick.".format(self, str(e)))
 
-
     def get_tile_path(self, tile_type, z, x, y):
         return self.assets_path("{}_tiles".format(tile_type), z, x, "{}.png".format(y))
 
@@ -583,7 +599,6 @@ class Task(models.Model):
         self.available_assets = [asset for asset in all_assets if self.is_asset_available_slow(asset)]
         if commit: self.save()
 
-
     def delete(self, using=None, keep_parents=False):
         task_id = self.id
         from app.plugins import signals as plugin_signals
@@ -608,11 +623,11 @@ class Task(models.Model):
         self.status = status_codes.FAILED
         self.pending_action = None
         self.save()
-        
+
     def find_all_files_matching(self, regex):
         directory = full_task_directory_path(self.id, self.project.id)
         return [os.path.join(directory, f) for f in os.listdir(directory) if
-                       re.match(regex, f, re.IGNORECASE)]
+                re.match(regex, f, re.IGNORECASE)]
 
     def resize_images(self):
         """
@@ -654,7 +669,8 @@ class Task(models.Model):
             dict[os.path.basename(ri['path'])] = ri['resize_ratio']
 
         try:
-            new_gcp_content = subprocess.check_output("node {} {} '{}'".format(quote(resize_script_path), quote(gcp_path), json.dumps(dict)), shell=True)
+            new_gcp_content = subprocess.check_output(
+                "node {} {} '{}'".format(quote(resize_script_path), quote(gcp_path), json.dumps(dict)), shell=True)
             with open(gcp_path, 'w') as f:
                 f.write(new_gcp_content.decode('utf-8'))
             logger.info("Resized GCP file {}".format(gcp_path))
@@ -669,7 +685,6 @@ class Task(models.Model):
         # )
         verbose_name = "任务"
         verbose_name_plural = verbose_name
-
 
 # class TaskForm(forms.ModelForm):
 #

@@ -33,7 +33,9 @@ urlpatterns = [
 
     url(r'^api/', include("app.api.urls")),
 
-    url(r'^task_test/(?P<project_pk>[\d]+)/', app_views.task_test, name='task_test')
+    url(r'^task_test/(?P<project_pk>[\d]+)/', app_views.task_test, name='task_test'),
+
+    url(r'^showmodel/', app_views.model_details, name='model_detail')
 ]
 
 

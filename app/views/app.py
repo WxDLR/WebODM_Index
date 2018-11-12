@@ -161,12 +161,12 @@ def handler500(request):
 def models(request):
     projects = Project.objects.all()
     serializer = ProjectSerializer(projects, many=True)
-    print(serializer.data[0]['tasks'][0])
-    print(type(serializer.data[0]['tasks']))
     return render(request, 'models.html', context={'projectlist': serializer.data})
+
 
 from app.models import ImageUpload
 from app.api.tasks import TaskSerializer
+
 
 def image_upload(request):
     if request.method == "POST":
@@ -195,5 +195,10 @@ def task_test(request, project_pk=None):
             task.options = request.POST.get('options')
             task.save()
             return HttpResponse(status=200, content="Ok")
+
+
+def model_details(request):
+    return render(request, 'app/model_detail.html')
+    pass
 
 

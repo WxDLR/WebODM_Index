@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Model</title>
+    <script src={% static 'Okaygis/js/three.js' %}></script>
+    <script src={% static "Okaygis/js/stats.min.js" %}></script>
+    <script src={% static "Okaygis/js/OrbitControls.js" %}></script>
+    <script src={% static "Okaygis/js/MTLLoader.js" %}></script>
+    <script src={% static "Okaygis/js/OBJLoader.js" %}></script>
+    <script>
+        let renderer, camera, scene, light, stats, controls;
+        function initRender() {
+            renderer = new THREE.WebGLRenderer({antialias:true});
+            renderer.setClearColor(0xEEEEEE);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+        }
+        function initCamera(){
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+            camera.position.set(0,0,80);
+            // camera.lookAt(new THREE.Vector3(0,0,0));
+        }
+        function initScene(){
+            scene = new THREE.Scene();
+            scene.position.set(0,0,0);
+        }
+        function initLight() {
+            scene.add(new THREE.AmbientLight(0xFFFFFF));
+            var directionalLight = new THREE.DirectionalLight(0xffeedd);
+            directionalLight.position.set(0, 0, 400).normalize();
+            scene.add(directionalLight);
+            // light = new THREE.SpotLight(0xFFFFFF);
+            // light.position.set(100,100,100);
+            // scene.add(light);
+        }
+        function initControls() {
+            controls = new THREE.OrbitControls(camera);
+            controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+            controls.dampingFactor = 0.25;
+
+            controls.screenSpacePanning = false;
+
+            controls.minDistance = 100;
+            controls.maxDistance = 500;
+            // controls.autoRotate = true;
+            controls.maxPolarAngle = Math.PI/2;
+
+        }
+        var geometry;
+
+
+        var MtlPath;
+        var ObjPath;
+        var PagePath;
+
+        function initObject() {
+            var MtlLoader = new THREE.MTLLoader();
+            MtlLoader.load("/media/project/9/task/2e41f866-d94d-4c0d-9877-edf7e3c69fa7/assets/odm_texturing/odm_textured_model.mtl", function (materials) {
+                materials.preload();
+                var ObjLoader = new THREE.OBJLoader();
+                ObjLoader.setMaterials(materials);
+                ObjLoader.load("/media/project/9/task/2e41f866-d94d-4c0d-9877-edf7e3c69fa7/assets/odm_texturing/odm_textured_model.obj", function (obj) {
+                    // obj.rotation.y = 3.14;
+                    // scene.rotate.y = 90;
+                    obj.rotation.x = THREE.Math.degToRad(270);
+                    console.log(obj.rotation.x);
+                    scene.add(obj);
+
+                }, onprogress, onerror);
+            });
+        }
+        function initStats() {
+            stats = new Stats();
+            document.body.appendChild(stats.domElement);
+        }
+        function animate(){
+            requestAnimationFrame(animate);
+            stats.update();
+            // scene.rotation.x += 0.01;
+            // scene.rotation.y += 0.01;
+            // scene.rotation.z += 0.01;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        function init() {
+            initStats();
+            initScene();
+            initCamera();
+            initControls();
+            initRender();
+            initLight();
+            initObject();
+        }
+        function main() {
+            init();
+            animate();
+        }
+    </script>
+</head>
+<body onload="main()">
+
+</body>
+</html>
